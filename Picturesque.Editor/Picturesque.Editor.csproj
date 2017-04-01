@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D3699A5B-4CCA-4283-B9E8-E7E704807220}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Picturesque.Editor</RootNamespace>
+    <AssemblyName>Picturesque.Editor</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ColorRGB.cs" />
+    <Compile Include="GraphicsUtils.cs" />
+    <Compile Include="Layers\HueLayer.cs" />
+    <Compile Include="Layers\BrightnessContrastLayer.cs" />
+    <Compile Include="Layers\ILayer.cs" />
+    <Compile Include="Layers\ImageLayer.cs" />
+    <Compile Include="LayerListItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LayerListItem.Designer.cs">
+      <DependentUpon>LayerListItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Layers\MaskedLayer.cs" />
+    <Compile Include="Layers\Properties\HueProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Layers\Properties\HueProperties.Designer.cs">
+      <DependentUpon>HueProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Layers\Properties\BrightnessContrastProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Layers\Properties\BrightnessContrastProperties.Designer.cs">
+      <DependentUpon>BrightnessContrastProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Layers\Properties\ImageLayerProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Layers\Properties\ImageLayerProperties.Designer.cs">
+      <DependentUpon>ImageLayerProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Project.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Selection.cs" />
+    <Compile Include="Tools\Eraser.cs" />
+    <Compile Include="Tools\MoveTool.cs" />
+    <Compile Include="Tools\ColorPicker.cs" />
+    <Compile Include="Tools\Pencil.cs" />
+    <Compile Include="Tools\Properties\SelectionProperties.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tools\Properties\SelectionProperties.Designer.cs">
+      <DependentUpon>SelectionProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\Properties\PencilProperties.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tools\Properties\PencilProperties.Designer.cs">
+      <DependentUpon>PencilProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\Properties\MoveToolProperties.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tools\Properties\MoveToolProperties.Designer.cs">
+      <DependentUpon>MoveToolProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\SelectionTool.cs" />
+    <Compile Include="Tools\Tool.cs" />
+    <EmbeddedResource Include="LayerListItem.resx">
+      <DependentUpon>LayerListItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Layers\Properties\HueProperties.resx">
+      <DependentUpon>HueProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Layers\Properties\BrightnessContrastProperties.resx">
+      <DependentUpon>BrightnessContrastProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Layers\Properties\ImageLayerProperties.resx">
+      <DependentUpon>ImageLayerProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Tools\Properties\SelectionProperties.resx">
+      <DependentUpon>SelectionProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\Properties\PencilProperties.resx">
+      <DependentUpon>PencilProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\Properties\MoveToolProperties.resx">
+      <DependentUpon>MoveToolProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

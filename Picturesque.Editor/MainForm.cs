@@ -1,0 +1,495 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Picturesque.Editor.Tools;
+using System.Drawing.Imaging;
+using Picturesque.Editor.Layers;
+using System.Drawing.Drawing2D;
+
+namespace Picturesque.Editor
+{
+	public partial class MainForm : Form
+	{
+		public int ASMargin = 25;
+		public float MinScale = 0.05f;
+		public float MaxScale = 5f;
+		private float scale = 1.0f;
+		public Project Project { get; set; }
+		public Tool Tool { get; set; }
+
+		public MainForm()
+		{
+			InitializeComponent();
+			canvas.MouseWheel += canvas_MouseWheel;
+			canvasContainer.MouseWheel += canvas_MouseWheel;
+			setTrasparentBackground();
+
+			newToolStripMenuItem.PerformClick();
+			toolBtn_Clicked(moveBtn, null);
+			updatePixelInfo(new PointF(-1, -1));
+			canvasContainer.AutoScrollMargin = new Size(ASMargin, ASMargin);
+
+			propertiesPanel.AutoSize = true;
+		}
+
+#region user32.dll
+		[DllImport("user32.dll")]
+		private static extern int SendMessage(IntPtr hWnd, Int32 wMsg, IntPtr wParam, IntPtr lParam);
+		[DllImport("user32.dll")]
+		public static extern int SendMessage(IntPtr hWnd, Int32 wMsg, bool wParam, Int32 lParam);
+
+		private const int WM_HSCROLL = 276;
+		private const int SB_LINELEFT = 0;
+		private const int SB_LINERIGHT = 1;
+		private const int WM_SETREDRAW = 11;
+
+		public static void SuspendDrawing(Control parent)
+		{
+			SendMessage(parent.Handle, WM_SETREDRAW, false, 0);
+		}
+
+		public static void ResumeDrawing(Control parent)
+		{
+			SendMessage(parent.Handle, WM_SETREDRAW, true, 0);
+			parent.Refresh();
+		}
+
+#endregion
+
+		public new float Scale
+		{
+			get { return scale; }
+			set
+			{
+				scale = value;
+				if (scale > MaxScale)
+				{
+					scale = MaxScale;
+				}
+				if (scale < MinScale)
+				{
+					scale = MinScale;
+				}
+				repositionCanvas();
+				if (Tool != null)
+				{
+					canvas.Cursor = Tool.GetCursor(Scale);
+				}
+			}
+		}
+
+		public Color MyForeColor
+		{
+			get { return Color.FromArgb(alphaTrackBar.Value, foreColor.BackColor); }
+		}
+		public Color MyBackColor
+		{
+			get { return backColor.BackColor; }
+		}
+
+		private void canvas_Paint(object sender, PaintEventArgs e)
+		{
+			var g = e.Graphics;
+			g.ScaleTransform(Scale, Scale);
+			if (Tool != null)
+			{
+				Tool.Paint(g);
+			}
+			if (Project.Selection != null)
+			{
+				g.Clip = new Region();
+				Project.Selection.Paint(g);
+			}
+			g.ScaleTransform(1/Scale, 1/Scale);
+		}
+
+		private void setTrasparentBackground()
+		{
+			var grid = new Bitmap(20, 20);
+			var g = Graphics.FromImage(grid);
+			g.FillRectangle(Brushes.LightGray, 0, 0, 10, 10);
+			g.FillRectangle(Brushes.LightGray, 10, 10, 10, 10);
+			canvas.BackgroundImage = grid;
+		}
+
+		void repositionCanvas()
+		{
+			canvas.Size = new Size(
+				(int)(canvas.Image.Width * Scale),
+				(int)(canvas.Image.Height * Scale)
+			);
+
+			if (canvas.Width < canvasContainer.ClientSize.Width)
+			{
+				canvasContainer.HorizontalScroll.Value = 0;
+			}
+			if (canvas.Height < canvasContainer.ClientSize.Height)
+			{
+				canvasContainer.VerticalScroll.Value = 0;
+			}
+			canvas.Location = new Point(
+				canvasContainer.ClientSize.Width > canvas.Width ?
+				(canvasContainer.ClientSize.Width - canvas.Width) / 2 : ASMargin,
+				canvasContainer.ClientSize.Height > canvas.Height ?
+				(canvasContainer.ClientSize.Height - canvas.Height) / 2 : ASMargin
+			);
+			canvas.Invalidate();
+		}
+
+		private void canvasContainer_Resize(object sender, EventArgs e)
+		{
+			repositionCanvas();
+		}
+
+		void canvas_MouseWheel(object sender, MouseEventArgs e)
+		{
+			HandledMouseEventArgs ee = (HandledMouseEventArgs)e;
+			if (ModifierKeys == Keys.Control)
+			{
+				Scale += (float)e.Delta / SystemInformation.MouseWheelScrollDelta / 10;
+
+				ee.Handled = true;
+			}
+			if (ModifierKeys == Keys.Shift)
+			{
+				var direction = e.Delta > 0 ? SB_LINELEFT : SB_LINERIGHT;
+				SendMessage(canvasContainer.Handle, WM_HSCROLL, (IntPtr)direction, IntPtr.Zero);
+
+				ee.Handled = true;
+			}
+		}
+
+		private void newToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Project = new Project(512, 512);
+			Project.Invalidated += Project_Invalidated;
+			Project.LayersListChanged += Project_LayersListChanged;
+			Project.SelectedLayerChanged += Project_SelectedLayerChanged;
+			var newLayer = Project.AddLayer() as ImageLayer;
+			var img = newLayer.Image;
+			using (var g = Graphics.FromImage(img))
+			{
+				g.DrawImage(new Bitmap(@"C:\Users\Oleg\Desktop\parrot200.jpg"), 0, 0);
+			}
+			Project.SelectedLayer = newLayer;
+			Project.Invalidate();
+			canvas.Image = Project.Image;
+			Project_LayersListChanged(this, null);
+			repositionCanvas();
+		}
+
+		void Project_SelectedLayerChanged(object sender, EventArgs e)
+		{
+			foreach(LayerListItem layer in layersList.Controls)
+			{
+				layer.Selected = layer.Model == Project.SelectedLayer;
+			}
+			upLayerBtn.Enabled = Project.SelectedLayer != Project.Layers.Last();
+			downLayerBtn.Enabled = Project.SelectedLayer != Project.Layers.First();
+		}
+
+		void Project_LayersListChanged(object sender, EventArgs e)
+		{
+			layersList.SuspendLayout();
+			SuspendDrawing(layersList);
+			layersList.Controls.Clear();
+			foreach(ILayer layer in Project.Layers.AsEnumerable().Reverse())
+			{
+				var layerListItem = new LayerListItem()
+				{
+					Model = layer,
+					Selected = Project.SelectedLayer == layer
+				};
+				layerListItem.Click += layerListItem_Click;
+				layersList.Controls.Add(layerListItem);
+			}
+			layersList_Resize(layersList, new EventArgs());
+			ResumeDrawing(layersList);
+			layersList.ResumeLayout();
+			deleteLayerBtn.Enabled = Project.Layers.Count > 1;
+			upLayerBtn.Enabled = Project.SelectedLayer != Project.Layers.Last();
+			downLayerBtn.Enabled = Project.SelectedLayer != Project.Layers.First();
+		}
+
+		void layerListItem_Click(object sender, EventArgs e)
+		{
+			var item = sender as LayerListItem;
+			Project.SelectedLayer = item.Model;
+		}
+
+		void Project_Invalidated(object sender, EventArgs e)
+		{
+			canvas.Invalidate();
+		}
+
+		private void canvas_MouseDown(object sender, MouseEventArgs e)
+		{
+			var loc = e.Location.Unscale(Scale);
+			if (Tool != null)
+			{
+				Tool.OnMouseDown(loc, ModifierKeys, MouseButtons);
+			}
+		}
+
+		private void canvas_MouseMove(object sender, MouseEventArgs e)
+		{
+			var loc = e.Location.Unscale(Scale);
+			if (Tool != null)
+			{
+				Tool.OnMouseMove(loc, ModifierKeys, MouseButtons);
+			}
+			updatePixelInfo(loc);
+		}
+
+		private void canvas_MouseUp(object sender, MouseEventArgs e)
+		{
+			var loc = e.Location.Unscale(Scale);
+			if (Tool != null)
+			{
+				Tool.OnMouseUp(loc, ModifierKeys, MouseButtons);
+			}
+		}
+
+		private void canvas_MouseLeave(object sender, EventArgs e)
+		{
+			updatePixelInfo(new PointF(-1, -1));
+		}
+
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+		{
+			if (Tool != null)
+			{
+				Tool.OnKeyPress(keyData, MouseButtons);
+			}
+			return base.ProcessCmdKey(ref msg, keyData);
+		}
+
+		private void updatePixelInfo(PointF location)
+		{
+			var loc = new Point((int)location.X, (int)location.Y);
+			var bmp = canvas.Image as Bitmap;
+			if (loc.X >= 0 && loc.Y >= 0 &&
+				loc.X < bmp.Width && loc.Y < bmp.Height)
+			{
+				var cl = bmp.GetPixel(loc.X, loc.Y);
+				posXLbl.Text	= String.Format("X: {0}", loc.X);
+				posYLbl.Text	= String.Format("Y: {0}", loc.Y);
+				clRedLbl.Text	= String.Format("R: {0}", cl.R);
+				clGreenLbl.Text = String.Format("G: {0}", cl.G);
+				clBlueLbl.Text	= String.Format("B: {0}", cl.B);
+				clAlphaLbl.Text = String.Format("A: {0}", cl.A);
+			}
+			else
+			{
+				posXLbl.Text	= "X:";
+				posYLbl.Text	= "Y:";
+				clRedLbl.Text	= "R:";
+				clGreenLbl.Text = "G:";
+				clBlueLbl.Text	= "B:";
+				clAlphaLbl.Text = "A:";
+			}
+		}
+
+		private Dictionary<string, Tool> tools = new Dictionary<string,Tool>();
+		private void setTool(string name)
+		{
+			if (tools.ContainsKey(name))
+			{
+				Tool = tools[name];
+			}
+			else
+			{
+				switch (name)
+				{
+					case "move":
+						Tool = new MoveTool(Project);
+						break;
+					case "pencil":
+						Tool = new Pencil(Project, MyForeColor, 1);
+						break;
+					case "eraser":
+						Tool = new Eraser(Project, 10);
+						break;
+					case "picker":
+						Tool = new ColorPicker(Project, MyForeColor, MyBackColor);
+						(Tool as ColorPicker).ColorChanged += colorPicker_ColorChanged;
+						break;
+					case "selection":
+						Tool = new SelectionTool(Project);
+						break;
+					default:
+						throw new ArgumentException();
+				}
+				Tool.Invalidated += Tool_Invalidated;
+				Tool.CursorChanged += Tool_CursorChanged;
+				tools[name] = Tool;
+			}
+			updateToolColor();
+			Tool_CursorChanged(this, null);
+			setToolPanel();
+		}
+
+		void setToolPanel()
+		{
+			propertiesPanel.SuspendLayout();
+			propertiesPanel.Controls.Clear();
+			if (Tool != null && Tool.Panel != null)
+			{
+				propertiesPanel.Controls.Add(Tool.Panel);
+				Tool.Invalidate();
+			}
+			propertiesPanel.ResumeLayout();
+		}
+
+		void Tool_CursorChanged(object sender, EventArgs e)
+		{
+			canvas.Cursor = Tool.GetCursor(Scale);
+		}
+
+		void Tool_Invalidated(object sender, EventArgs e)
+		{
+			canvas.Invalidate();
+		}
+
+		void colorPicker_ColorChanged(object sender, EventArgs e)
+		{
+			var cp = Tool as ColorPicker;
+			foreColor.BackColor = cp.ForeColor;
+			backColor.BackColor = cp.BackColor;
+		}
+
+		private void toolBtn_Clicked(object sender, EventArgs e)
+		{
+			var ctrl = sender as Control;
+			setTool(ctrl.Tag as string);
+		}
+
+		private void toolbarSizeBtn_Click(object sender, EventArgs e)
+		{
+			var more = toolbar.Width < 48;
+			toolbar.Width = more ? 64 : 32;
+			toolbarSizeBtn.Text = more ? "<<" : ">>";
+		}
+
+		private void layersList_Resize(object sender, EventArgs e)
+		{
+			foreach(LayerListItem item in layersList.Controls)
+			{
+				item.Width = layersList.ClientSize.Width;
+			}
+		}
+
+		private void colorPanel_Paint(object sender, PaintEventArgs e)
+		{
+			var g = e.Graphics;
+			using (var pen = new Pen(Color.White, 3))
+			{
+				g.DrawRectangle(pen, 1, 1, 47, 47);
+			}
+			using (var pen = new Pen(Color.Black, 1))
+			{
+				g.DrawRectangle(pen, 1, 1, 47, 47);
+			}
+		}
+
+		private void updateToolColor()
+		{
+			if (Tool is IColorTool)
+			{
+				var ct = Tool as IColorTool;
+				ct.Color = MyForeColor;
+			}
+			if (Tool is IDoubleColorTool)
+			{
+				var dct = Tool as IDoubleColorTool;
+				dct.ForeColor = MyForeColor;
+				dct.BackColor = MyBackColor;
+			}
+		}
+
+		private void colorPanel_Click(object sender, EventArgs e)
+		{
+			var panel = sender as Panel;
+			var cd = new ColorDialog()
+			{
+				Color = panel.BackColor,
+				FullOpen = true
+			};
+			if (cd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				panel.BackColor = cd.Color;
+			}
+			updateToolColor();
+		}
+
+		private void switchBtn_Click(object sender, EventArgs e)
+		{
+			var bc = MyBackColor;
+			backColor.BackColor = MyForeColor;
+			foreColor.BackColor = bc;
+			updateToolColor();
+		}
+
+		private void alphaTrackBar_ValueChanged(object sender, EventArgs e)
+		{
+			foreAlphaLbl.Text = alphaTrackBar.Value.ToString();
+			updateToolColor();
+		}
+
+		private void createLayerBtn_Click(object sender, EventArgs e)
+		{
+			Project.SelectedLayer = Project.AddLayer();
+		}
+
+		private void deleteLayerBtn_Click(object sender, EventArgs e)
+		{
+			Project.RemoveLayer();
+		}
+
+		private void upLayerBtn_Click(object sender, EventArgs e)
+		{
+			Project.MoveUp();
+		}
+
+		private void downLayerBtn_Click(object sender, EventArgs e)
+		{
+			Project.MoveDown();
+		}
+
+		private void layerPropertiesBtn_Click(object sender, EventArgs e)
+		{
+			Project.SelectedLayer.ShowProperties();
+		}
+
+		private void mergeLayersBtn_Click(object sender, EventArgs e)
+		{
+			Project.Flaten();
+		}
+
+		private void adjustmentBtn_Click(object sender, EventArgs e)
+		{
+			adjustmentMenu.Show(adjustmentBtn, 0, adjustmentBtn.Height);
+		}
+
+		private void brightnessContrastToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Project.SelectedLayer = Project.AddLayer(
+				new BrightnessContrastLayer(Project.GetMask()));
+			Project.SelectedLayer.ShowProperties();
+		}
+
+		private void hueSaturationToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Project.SelectedLayer = Project.AddLayer(
+				new HueLayer(Project.GetMask()));
+			Project.SelectedLayer.ShowProperties();
+		}
+	}
+}
