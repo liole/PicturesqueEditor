@@ -55,7 +55,9 @@ namespace Picturesque.Editor.Tools
 				{
 					var movableLayer = Project.SelectedLayer as IMovable;
 					var rect = new RectangleF(movableLayer.Position, img.Size);
-					g.Clip.Intersect(new Region(rect));
+					var newClip = new Region(rect);
+					newClip.Intersect(g.Clip);
+					g.Clip = newClip;
 				}
 			}
 			using (var pen = getPen(g))

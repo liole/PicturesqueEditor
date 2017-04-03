@@ -147,6 +147,16 @@ namespace Picturesque.Editor
 			Invalidate();
 		}
 
+		public void SelectAll()
+		{
+			var path = new GraphicsPath();
+			path.AddRectangle(new Rectangle(
+				new Point(0, 0),
+				Image.Size
+			));
+			CreateSelection(path);
+		}
+
 		public Bitmap GetMask()
 		{
 			var mask = new Bitmap(Image.Size.Width, Image.Size.Height);
@@ -200,6 +210,58 @@ namespace Picturesque.Editor
 				{
 					layer.Draw(Image);
 				}
+			}
+		}
+
+		public Bitmap GetSelection()
+		{
+			var bounds = new RectangleF(new PointF(0, 0), Image.Size);
+			if (Selection != null)
+			{
+				bounds = Selection.Path.GetBounds();
+			}
+			var bmp = new Bitmap((int)bounds.Width, (int)bounds.Height);
+			using (var g = Graphics.FromImage(bmp))
+			{
+				g.TranslateTransform(-bounds.X, -bounds.Y);
+				if (Selection != null)
+				{
+					g.Clip = new Region(Selection.Path);
+				}
+				SelectedLayer.Paint(g);
+			}
+			return bmp;
+		}
+
+		public void DeleteArea()
+		{
+			if (SelectedLayer is ImageLayer)
+			{
+				var imageLayer = SelectedLayer as ImageLayer;
+				var region = new Region();
+				if (Selection != null)
+				{
+					region = new Region(Selection.Path);
+				}
+				imageLayer.DeleteArea(region);
+			}
+		}
+
+		public void ExtendLayer()
+		{
+			if (SelectedLayer is ImageLayer)
+			{
+				var im = SelectedLayer as ImageLayer;
+				im.Extend(Image.Size);
+			}
+		}
+
+		public void ClipLayer()
+		{
+			if (SelectedLayer is ImageLayer)
+			{
+				var im = SelectedLayer as ImageLayer;
+				im.Clip(Image.Size);
 			}
 		}
 	}

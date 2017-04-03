@@ -16,7 +16,7 @@ namespace Picturesque.Editor.Layers
 		public bool Visible { get; set; }
 		public ColorMatrix ColorMatrix { get; set; }
 		public Bitmap Image { get; private set; }
-		private Bitmap temp { get; set; }
+		private Bitmap prev { get; set; }
 		private PointF position;
 		public PointF Position {
 			get { return position; }
@@ -82,22 +82,23 @@ namespace Picturesque.Editor.Layers
 
 		public virtual Bitmap StartEditing()
 		{
-			temp = new Bitmap(Image);
-			return temp;
+			prev = new Bitmap(Image);
+			return Image;
 		}
 
 		public virtual void ApplyChanges()
 		{
-			Image.Dispose();
-			Image = temp;
-			temp = null;
+			prev.Dispose();
+			prev = null;
 			Invalidate();
 		}
 
 		public virtual void DiscardChanges()
 		{
-			temp.Dispose();
-			temp = null;
+			if (prev == null) return;
+			Image.Dispose();
+			Image = prev;
+			prev = null;
 			Invalidate();
 		}
 
@@ -111,7 +112,7 @@ namespace Picturesque.Editor.Layers
 
 		public virtual void Paint(Graphics g)
 		{
-			var source = temp == null ? Image : temp;
+			var source = Image;
 			var imageAtt = new ImageAttributes();
 			imageAtt.SetColorMatrix(
 			   ColorMatrix,
@@ -171,6 +172,87 @@ namespace Picturesque.Editor.Layers
 		{
 			var lp = sender as ImageLayerProperties;
 			ColorMatrix = lp.ColorMatrix;
+			Invalidate();
+		}
+
+		public void DeleteArea(Region area)
+		{
+			using (var g = Graphics.FromImage(Image))
+			{
+				g.TranslateTransform(-Position.X, -Position.Y);
+				g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+				g.FillRegion(Brushes.Transparent, area);
+				Invalidate();
+			}
+		}
+
+		public void Extend(Size size)
+		{
+			var newSize = size;
+			var pos = new PointF(0, 0);
+			var drawPos = Position;
+			if (size.Width < Position.X + Image.Size.Width)
+			{
+				newSize.Width = (int)Position.X + Image.Size.Width;
+			}
+			if (size.Height < Position.Y + Image.Size.Height)
+			{
+				newSize.Height = (int)Position.Y + Image.Size.Height;
+			}
+			if (Position.X < 0)
+			{
+				newSize.Width -= (int)Position.X;
+				pos.X = Position.X;
+				drawPos.X = 0;
+			}
+			if (Position.Y < 0)
+			{
+				newSize.Height -= (int)Position.Y;
+				pos.Y = Position.Y;
+				drawPos.Y = 0;
+			}
+			var bmp = new Bitmap(newSize.Width, newSize.Height);
+			using (var g = Graphics.FromImage(bmp))
+			{
+				g.DrawImage(Image, drawPos);
+			}
+			Position = pos;
+			Image = bmp;
+			Invalidate();
+		}
+
+		public void Clip(Size size)
+		{
+			var newSize = Image.Size;
+			var pos = Position;
+			var drawPos = new PointF(0, 0);
+			if (size.Width < Position.X + Image.Size.Width)
+			{
+				newSize.Width = size.Width - (int)Position.X;
+			}
+			if (size.Height < Position.Y + Image.Size.Height)
+			{
+				newSize.Height = size.Height - (int)Position.Y;
+			}
+			if (Position.X < 0)
+			{
+				newSize.Width += (int)Position.X;
+				pos.X = 0;
+				drawPos.X = Position.X;
+			}
+			if (Position.Y < 0)
+			{
+				newSize.Height += (int)Position.Y;
+				pos.Y = 0;
+				drawPos.Y = Position.Y;
+			}
+			var bmp = new Bitmap(newSize.Width, newSize.Height);
+			using (var g = Graphics.FromImage(bmp))
+			{
+				g.DrawImage(Image, drawPos);
+			}
+			Position = pos;
+			Image = bmp;
 			Invalidate();
 		}
 	}

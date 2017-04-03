@@ -12,6 +12,7 @@ using Picturesque.Editor.Tools;
 using System.Drawing.Imaging;
 using Picturesque.Editor.Layers;
 using System.Drawing.Drawing2D;
+using System.IO;
 
 namespace Picturesque.Editor
 {
@@ -490,6 +491,66 @@ namespace Picturesque.Editor
 			Project.SelectedLayer = Project.AddLayer(
 				new HueLayer(Project.GetMask()));
 			Project.SelectedLayer.ShowProperties();
+		}
+
+		private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var bmp = Project.GetSelection();
+			MemoryStream ms = new MemoryStream();
+			bmp.Save(ms, ImageFormat.Png);
+			IDataObject dataObject = new DataObject();
+			dataObject.SetData("PNG", false, ms);
+			Clipboard.SetDataObject(dataObject, true);
+		}
+
+		private void copyBitmapToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var bmp = Project.GetSelection();
+			Clipboard.SetImage(bmp);
+		}
+
+		private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var bmp = GraphicsUtils.GetImageFromClipboard() as Bitmap;
+			if (bmp != null)
+			{
+				Project.SelectedLayer = Project.AddLayer(
+					new ImageLayer(bmp)
+				);
+				Project.SelectedLayer.Name = "Layer from clipboard";
+				Project.ClearSelection();
+			}
+		}
+
+		private void clearSelectionToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Project.ClearSelection();
+		}
+
+		private void deleteAreaToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Project.DeleteArea();
+		}
+
+		private void cutToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			copyToolStripMenuItem_Click(sender, e);
+			deleteAreaToolStripMenuItem_Click(sender, e);
+		}
+
+		private void extendBtn_Click(object sender, EventArgs e)
+		{
+			Project.ExtendLayer();
+		}
+
+		private void clipBtn_Click(object sender, EventArgs e)
+		{
+			Project.ClipLayer();
+		}
+
+		private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Project.SelectAll();
 		}
 	}
 }

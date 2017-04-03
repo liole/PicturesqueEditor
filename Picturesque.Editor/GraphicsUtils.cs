@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Picturesque.Editor
 {
@@ -178,6 +181,56 @@ namespace Picturesque.Editor
 			var lll = clip((int)ll, 100, 0);
 			var rgb = ColorRGB.FromHSLA(hhh / 360.0, sss / 100.0, lll / 100.0, c.A);
 			return rgb;
+		}
+
+		public static Image GetImageFromClipboard()
+		{
+			using (MemoryStream ms = Clipboard.GetData("PNG") as MemoryStream)
+			{
+				if (ms != null)
+				{
+					try { return Image.FromStream(ms); }
+					catch { }
+				}
+			}
+			StringCollection paths = Clipboard.GetFileDropList();
+			if (paths != null && paths.Count > 0)
+			{
+				foreach (string file in paths)
+				{
+					try { return Image.FromFile(file); }
+					catch { }
+				}
+			}
+			byte[] data;
+			using (MemoryStream ms = Clipboard.GetData(DataFormats.Dib) as MemoryStream)
+			{
+				if (ms == null)
+				{
+					return Clipboard.GetImage();
+				}
+				data = ms.ToArray();
+			}
+			int width = BitConverter.ToInt32(data, 4);
+			int stride = width * 4;
+			int height = BitConverter.ToInt32(data, 8);
+			int bpp = BitConverter.ToInt16(data, 14);
+			if (bpp != 32)
+				return Clipboard.GetImage();
+			GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+			try
+			{
+				IntPtr ptr = new IntPtr((long)handle.AddrOfPinnedObject() + 40);
+				return new Bitmap(width, height, stride, System.Drawing.Imaging.PixelFormat.Format32bppArgb, ptr);
+			}
+			catch
+			{
+				return Clipboard.GetImage();
+			}
+			finally
+			{
+				handle.Free();
+			}
 		}
 	}
 }

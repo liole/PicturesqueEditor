@@ -37,6 +37,7 @@
 			this.pencilBtn = new System.Windows.Forms.RadioButton();
 			this.eraserBtn = new System.Windows.Forms.RadioButton();
 			this.pickerBtn = new System.Windows.Forms.RadioButton();
+			this.selectionBtn = new System.Windows.Forms.RadioButton();
 			this.toolbarSizeBtn = new System.Windows.Forms.Button();
 			this.toolbarSplitter = new System.Windows.Forms.Splitter();
 			this.canvasContainer = new System.Windows.Forms.Panel();
@@ -83,6 +84,8 @@
 			this.upLayerBtn = new System.Windows.Forms.Button();
 			this.downLayerBtn = new System.Windows.Forms.Button();
 			this.layerPropertiesBtn = new System.Windows.Forms.Button();
+			this.mergeLayersBtn = new System.Windows.Forms.Button();
+			this.adjustmentBtn = new System.Windows.Forms.Button();
 			this.layersTitleLbl = new System.Windows.Forms.Label();
 			this.infoPanel = new System.Windows.Forms.Panel();
 			this.foreAlphaLbl = new System.Windows.Forms.Label();
@@ -100,12 +103,15 @@
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.propertiesPanel = new System.Windows.Forms.Panel();
 			this.propertiesSplitter = new System.Windows.Forms.Splitter();
-			this.mergeLayersBtn = new System.Windows.Forms.Button();
-			this.adjustmentBtn = new System.Windows.Forms.Button();
-			this.selectionBtn = new System.Windows.Forms.RadioButton();
 			this.adjustmentMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.brightnessContrastToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.hueSaturationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.copyBitmapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.clearSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.deleteAreaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.transformBtn = new System.Windows.Forms.RadioButton();
+			this.extendBtn = new System.Windows.Forms.Button();
+			this.clipBtn = new System.Windows.Forms.Button();
 			this.toolbar.SuspendLayout();
 			this.toolbarLayout.SuspendLayout();
 			this.canvasContainer.SuspendLayout();
@@ -138,6 +144,7 @@
 			this.toolbarLayout.Controls.Add(this.eraserBtn);
 			this.toolbarLayout.Controls.Add(this.pickerBtn);
 			this.toolbarLayout.Controls.Add(this.selectionBtn);
+			this.toolbarLayout.Controls.Add(this.transformBtn);
 			this.toolbarLayout.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolbarLayout.Location = new System.Drawing.Point(0, 16);
 			this.toolbarLayout.Name = "toolbarLayout";
@@ -175,6 +182,7 @@
 			this.toolsImageList.Images.SetKeyName(2, "picker");
 			this.toolsImageList.Images.SetKeyName(3, "eraser");
 			this.toolsImageList.Images.SetKeyName(4, "select");
+			this.toolsImageList.Images.SetKeyName(5, "transform");
 			// 
 			// pencilBtn
 			// 
@@ -233,6 +241,25 @@
 			this.pickerBtn.UseVisualStyleBackColor = false;
 			this.pickerBtn.Click += new System.EventHandler(this.toolBtn_Clicked);
 			// 
+			// selectionBtn
+			// 
+			this.selectionBtn.Appearance = System.Windows.Forms.Appearance.Button;
+			this.selectionBtn.FlatAppearance.BorderSize = 0;
+			this.selectionBtn.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.selectionBtn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.selectionBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+			this.selectionBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.selectionBtn.ImageKey = "select";
+			this.selectionBtn.ImageList = this.toolsImageList;
+			this.selectionBtn.Location = new System.Drawing.Point(4, 123);
+			this.selectionBtn.Name = "selectionBtn";
+			this.selectionBtn.Size = new System.Drawing.Size(24, 24);
+			this.selectionBtn.TabIndex = 4;
+			this.selectionBtn.Tag = "selection";
+			this.toolTip.SetToolTip(this.selectionBtn, "Selection");
+			this.selectionBtn.UseVisualStyleBackColor = false;
+			this.selectionBtn.Click += new System.EventHandler(this.toolBtn_Clicked);
+			// 
 			// toolbarSizeBtn
 			// 
 			this.toolbarSizeBtn.Dock = System.Windows.Forms.DockStyle.Top;
@@ -268,7 +295,7 @@
 			this.canvasContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.canvasContainer.Location = new System.Drawing.Point(34, 58);
 			this.canvasContainer.Name = "canvasContainer";
-			this.canvasContainer.Size = new System.Drawing.Size(448, 503);
+			this.canvasContainer.Size = new System.Drawing.Size(444, 503);
 			this.canvasContainer.TabIndex = 3;
 			this.canvasContainer.Resize += new System.EventHandler(this.canvasContainer_Resize);
 			// 
@@ -399,9 +426,12 @@
             this.toolStripSeparator3,
             this.cutToolStripMenuItem,
             this.copyToolStripMenuItem,
+            this.copyBitmapToolStripMenuItem,
             this.pasteToolStripMenuItem,
             this.toolStripSeparator4,
-            this.selectAllToolStripMenuItem});
+            this.selectAllToolStripMenuItem,
+            this.clearSelectionToolStripMenuItem,
+            this.deleteAreaToolStripMenuItem});
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
 			this.editToolStripMenuItem.Text = "&Edit";
@@ -410,20 +440,20 @@
 			// 
 			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
 			this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-			this.undoToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.undoToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
 			this.undoToolStripMenuItem.Text = "&Undo";
 			// 
 			// redoToolStripMenuItem
 			// 
 			this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
 			this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-			this.redoToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.redoToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
 			this.redoToolStripMenuItem.Text = "&Redo";
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(141, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(223, 6);
 			// 
 			// cutToolStripMenuItem
 			// 
@@ -431,8 +461,9 @@
 			this.cutToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
 			this.cutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-			this.cutToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.cutToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
 			this.cutToolStripMenuItem.Text = "Cu&t";
+			this.cutToolStripMenuItem.Click += new System.EventHandler(this.cutToolStripMenuItem_Click);
 			// 
 			// copyToolStripMenuItem
 			// 
@@ -440,8 +471,9 @@
 			this.copyToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
 			this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.copyToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.copyToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
 			this.copyToolStripMenuItem.Text = "&Copy";
+			this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
 			// 
 			// pasteToolStripMenuItem
 			// 
@@ -449,19 +481,22 @@
 			this.pasteToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
 			this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
 			this.pasteToolStripMenuItem.Text = "&Paste";
+			this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator4
 			// 
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(141, 6);
+			this.toolStripSeparator4.Size = new System.Drawing.Size(223, 6);
 			// 
 			// selectAllToolStripMenuItem
 			// 
 			this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
-			this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.selectAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+			this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
 			this.selectAllToolStripMenuItem.Text = "Select &All";
+			this.selectAllToolStripMenuItem.Click += new System.EventHandler(this.selectAllToolStripMenuItem_Click);
 			// 
 			// toolsToolStripMenuItem
 			// 
@@ -530,9 +565,9 @@
 			this.sidebar.BackColor = System.Drawing.Color.DimGray;
 			this.sidebar.Controls.Add(this.tableLayoutPanel);
 			this.sidebar.Dock = System.Windows.Forms.DockStyle.Right;
-			this.sidebar.Location = new System.Drawing.Point(484, 24);
+			this.sidebar.Location = new System.Drawing.Point(480, 24);
 			this.sidebar.Name = "sidebar";
-			this.sidebar.Size = new System.Drawing.Size(200, 537);
+			this.sidebar.Size = new System.Drawing.Size(204, 537);
 			this.sidebar.TabIndex = 1;
 			// 
 			// tableLayoutPanel
@@ -547,7 +582,7 @@
 			this.tableLayoutPanel.RowCount = 2;
 			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
 			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel.Size = new System.Drawing.Size(200, 537);
+			this.tableLayoutPanel.Size = new System.Drawing.Size(204, 537);
 			this.tableLayoutPanel.TabIndex = 0;
 			// 
 			// layersPanel
@@ -559,7 +594,7 @@
 			this.layersPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.layersPanel.Location = new System.Drawing.Point(3, 103);
 			this.layersPanel.Name = "layersPanel";
-			this.layersPanel.Size = new System.Drawing.Size(194, 431);
+			this.layersPanel.Size = new System.Drawing.Size(198, 431);
 			this.layersPanel.TabIndex = 2;
 			// 
 			// layersList
@@ -569,7 +604,7 @@
 			this.layersList.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
 			this.layersList.Location = new System.Drawing.Point(0, 38);
 			this.layersList.Name = "layersList";
-			this.layersList.Size = new System.Drawing.Size(194, 393);
+			this.layersList.Size = new System.Drawing.Size(198, 393);
 			this.layersList.TabIndex = 1;
 			this.layersList.WrapContents = false;
 			this.layersList.Resize += new System.EventHandler(this.layersList_Resize);
@@ -581,7 +616,7 @@
 			this.layersSplitter.Enabled = false;
 			this.layersSplitter.Location = new System.Drawing.Point(0, 37);
 			this.layersSplitter.Name = "layersSplitter";
-			this.layersSplitter.Size = new System.Drawing.Size(194, 1);
+			this.layersSplitter.Size = new System.Drawing.Size(198, 1);
 			this.layersSplitter.TabIndex = 0;
 			this.layersSplitter.TabStop = false;
 			// 
@@ -595,10 +630,12 @@
 			this.layerToolbar.Controls.Add(this.layerPropertiesBtn);
 			this.layerToolbar.Controls.Add(this.mergeLayersBtn);
 			this.layerToolbar.Controls.Add(this.adjustmentBtn);
+			this.layerToolbar.Controls.Add(this.extendBtn);
+			this.layerToolbar.Controls.Add(this.clipBtn);
 			this.layerToolbar.Dock = System.Windows.Forms.DockStyle.Top;
 			this.layerToolbar.Location = new System.Drawing.Point(0, 15);
 			this.layerToolbar.Name = "layerToolbar";
-			this.layerToolbar.Size = new System.Drawing.Size(194, 22);
+			this.layerToolbar.Size = new System.Drawing.Size(198, 22);
 			this.layerToolbar.TabIndex = 0;
 			// 
 			// createLayerBtn
@@ -631,6 +668,8 @@
 			this.layerToolsImageList.Images.SetKeyName(4, "settings");
 			this.layerToolsImageList.Images.SetKeyName(5, "layers");
 			this.layerToolsImageList.Images.SetKeyName(6, "adjustment");
+			this.layerToolsImageList.Images.SetKeyName(7, "extend");
+			this.layerToolsImageList.Images.SetKeyName(8, "clip");
 			// 
 			// deleteLayerBtn
 			// 
@@ -708,13 +747,51 @@
 			this.layerPropertiesBtn.UseVisualStyleBackColor = false;
 			this.layerPropertiesBtn.Click += new System.EventHandler(this.layerPropertiesBtn_Click);
 			// 
+			// mergeLayersBtn
+			// 
+			this.mergeLayersBtn.FlatAppearance.BorderSize = 0;
+			this.mergeLayersBtn.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.mergeLayersBtn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.mergeLayersBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+			this.mergeLayersBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.mergeLayersBtn.ImageKey = "layers";
+			this.mergeLayersBtn.ImageList = this.layerToolsImageList;
+			this.mergeLayersBtn.Location = new System.Drawing.Point(111, 1);
+			this.mergeLayersBtn.Margin = new System.Windows.Forms.Padding(1);
+			this.mergeLayersBtn.Name = "mergeLayersBtn";
+			this.mergeLayersBtn.Size = new System.Drawing.Size(20, 20);
+			this.mergeLayersBtn.TabIndex = 8;
+			this.mergeLayersBtn.Tag = "";
+			this.toolTip.SetToolTip(this.mergeLayersBtn, "Merge layers (flaten)");
+			this.mergeLayersBtn.UseVisualStyleBackColor = false;
+			this.mergeLayersBtn.Click += new System.EventHandler(this.mergeLayersBtn_Click);
+			// 
+			// adjustmentBtn
+			// 
+			this.adjustmentBtn.FlatAppearance.BorderSize = 0;
+			this.adjustmentBtn.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.adjustmentBtn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.adjustmentBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+			this.adjustmentBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.adjustmentBtn.ImageKey = "adjustment";
+			this.adjustmentBtn.ImageList = this.layerToolsImageList;
+			this.adjustmentBtn.Location = new System.Drawing.Point(133, 1);
+			this.adjustmentBtn.Margin = new System.Windows.Forms.Padding(1);
+			this.adjustmentBtn.Name = "adjustmentBtn";
+			this.adjustmentBtn.Size = new System.Drawing.Size(20, 20);
+			this.adjustmentBtn.TabIndex = 9;
+			this.adjustmentBtn.Tag = "";
+			this.toolTip.SetToolTip(this.adjustmentBtn, "Add adjustment layer");
+			this.adjustmentBtn.UseVisualStyleBackColor = false;
+			this.adjustmentBtn.Click += new System.EventHandler(this.adjustmentBtn_Click);
+			// 
 			// layersTitleLbl
 			// 
 			this.layersTitleLbl.Dock = System.Windows.Forms.DockStyle.Top;
 			this.layersTitleLbl.ForeColor = System.Drawing.Color.LightGray;
 			this.layersTitleLbl.Location = new System.Drawing.Point(0, 0);
 			this.layersTitleLbl.Name = "layersTitleLbl";
-			this.layersTitleLbl.Size = new System.Drawing.Size(194, 15);
+			this.layersTitleLbl.Size = new System.Drawing.Size(198, 15);
 			this.layersTitleLbl.TabIndex = 0;
 			this.layersTitleLbl.Text = "Layers";
 			this.layersTitleLbl.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -735,7 +812,7 @@
 			this.infoPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.infoPanel.Location = new System.Drawing.Point(3, 3);
 			this.infoPanel.Name = "infoPanel";
-			this.infoPanel.Size = new System.Drawing.Size(194, 94);
+			this.infoPanel.Size = new System.Drawing.Size(198, 94);
 			this.infoPanel.TabIndex = 3;
 			// 
 			// foreAlphaLbl
@@ -809,7 +886,7 @@
 			this.alphaTrackBar.Location = new System.Drawing.Point(86, 66);
 			this.alphaTrackBar.Maximum = 255;
 			this.alphaTrackBar.Name = "alphaTrackBar";
-			this.alphaTrackBar.Size = new System.Drawing.Size(104, 25);
+			this.alphaTrackBar.Size = new System.Drawing.Size(112, 25);
 			this.alphaTrackBar.TabIndex = 3;
 			this.alphaTrackBar.TickFrequency = 16;
 			this.alphaTrackBar.Value = 255;
@@ -857,7 +934,7 @@
 			// 
 			this.sidebarSplitter.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.sidebarSplitter.Dock = System.Windows.Forms.DockStyle.Right;
-			this.sidebarSplitter.Location = new System.Drawing.Point(482, 24);
+			this.sidebarSplitter.Location = new System.Drawing.Point(478, 24);
 			this.sidebarSplitter.MinSize = 100;
 			this.sidebarSplitter.Name = "sidebarSplitter";
 			this.sidebarSplitter.Size = new System.Drawing.Size(2, 537);
@@ -870,7 +947,7 @@
 			this.propertiesPanel.Dock = System.Windows.Forms.DockStyle.Top;
 			this.propertiesPanel.Location = new System.Drawing.Point(0, 24);
 			this.propertiesPanel.Name = "propertiesPanel";
-			this.propertiesPanel.Size = new System.Drawing.Size(482, 32);
+			this.propertiesPanel.Size = new System.Drawing.Size(478, 32);
 			this.propertiesPanel.TabIndex = 1;
 			// 
 			// propertiesSplitter
@@ -880,66 +957,9 @@
 			this.propertiesSplitter.Enabled = false;
 			this.propertiesSplitter.Location = new System.Drawing.Point(0, 56);
 			this.propertiesSplitter.Name = "propertiesSplitter";
-			this.propertiesSplitter.Size = new System.Drawing.Size(482, 2);
+			this.propertiesSplitter.Size = new System.Drawing.Size(478, 2);
 			this.propertiesSplitter.TabIndex = 5;
 			this.propertiesSplitter.TabStop = false;
-			// 
-			// mergeLayersBtn
-			// 
-			this.mergeLayersBtn.FlatAppearance.BorderSize = 0;
-			this.mergeLayersBtn.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.mergeLayersBtn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.mergeLayersBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-			this.mergeLayersBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.mergeLayersBtn.ImageKey = "layers";
-			this.mergeLayersBtn.ImageList = this.layerToolsImageList;
-			this.mergeLayersBtn.Location = new System.Drawing.Point(111, 1);
-			this.mergeLayersBtn.Margin = new System.Windows.Forms.Padding(1);
-			this.mergeLayersBtn.Name = "mergeLayersBtn";
-			this.mergeLayersBtn.Size = new System.Drawing.Size(20, 20);
-			this.mergeLayersBtn.TabIndex = 8;
-			this.mergeLayersBtn.Tag = "";
-			this.toolTip.SetToolTip(this.mergeLayersBtn, "Merge layers (flaten)");
-			this.mergeLayersBtn.UseVisualStyleBackColor = false;
-			this.mergeLayersBtn.Click += new System.EventHandler(this.mergeLayersBtn_Click);
-			// 
-			// adjustmentBtn
-			// 
-			this.adjustmentBtn.FlatAppearance.BorderSize = 0;
-			this.adjustmentBtn.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.adjustmentBtn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.adjustmentBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-			this.adjustmentBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.adjustmentBtn.ImageKey = "adjustment";
-			this.adjustmentBtn.ImageList = this.layerToolsImageList;
-			this.adjustmentBtn.Location = new System.Drawing.Point(133, 1);
-			this.adjustmentBtn.Margin = new System.Windows.Forms.Padding(1);
-			this.adjustmentBtn.Name = "adjustmentBtn";
-			this.adjustmentBtn.Size = new System.Drawing.Size(20, 20);
-			this.adjustmentBtn.TabIndex = 9;
-			this.adjustmentBtn.Tag = "";
-			this.toolTip.SetToolTip(this.adjustmentBtn, "Add adjustment layer");
-			this.adjustmentBtn.UseVisualStyleBackColor = false;
-			this.adjustmentBtn.Click += new System.EventHandler(this.adjustmentBtn_Click);
-			// 
-			// selectionBtn
-			// 
-			this.selectionBtn.Appearance = System.Windows.Forms.Appearance.Button;
-			this.selectionBtn.FlatAppearance.BorderSize = 0;
-			this.selectionBtn.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.selectionBtn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.selectionBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-			this.selectionBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.selectionBtn.ImageKey = "select";
-			this.selectionBtn.ImageList = this.toolsImageList;
-			this.selectionBtn.Location = new System.Drawing.Point(4, 123);
-			this.selectionBtn.Name = "selectionBtn";
-			this.selectionBtn.Size = new System.Drawing.Size(24, 24);
-			this.selectionBtn.TabIndex = 4;
-			this.selectionBtn.Tag = "selection";
-			this.toolTip.SetToolTip(this.selectionBtn, "Selection");
-			this.selectionBtn.UseVisualStyleBackColor = false;
-			this.selectionBtn.Click += new System.EventHandler(this.toolBtn_Clicked);
 			// 
 			// adjustmentMenu
 			// 
@@ -949,7 +969,7 @@
 			this.adjustmentMenu.Name = "adjustmentMenu";
 			this.adjustmentMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
 			this.adjustmentMenu.ShowImageMargin = false;
-			this.adjustmentMenu.Size = new System.Drawing.Size(155, 70);
+			this.adjustmentMenu.Size = new System.Drawing.Size(155, 48);
 			// 
 			// brightnessContrastToolStripMenuItem
 			// 
@@ -964,6 +984,90 @@
 			this.hueSaturationToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
 			this.hueSaturationToolStripMenuItem.Text = "Hue/Saturation";
 			this.hueSaturationToolStripMenuItem.Click += new System.EventHandler(this.hueSaturationToolStripMenuItem_Click);
+			// 
+			// copyBitmapToolStripMenuItem
+			// 
+			this.copyBitmapToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("copyBitmapToolStripMenuItem.Image")));
+			this.copyBitmapToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.copyBitmapToolStripMenuItem.Name = "copyBitmapToolStripMenuItem";
+			this.copyBitmapToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.C)));
+			this.copyBitmapToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+			this.copyBitmapToolStripMenuItem.Text = "Copy universal";
+			this.copyBitmapToolStripMenuItem.Click += new System.EventHandler(this.copyBitmapToolStripMenuItem_Click);
+			// 
+			// clearSelectionToolStripMenuItem
+			// 
+			this.clearSelectionToolStripMenuItem.Name = "clearSelectionToolStripMenuItem";
+			this.clearSelectionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
+			this.clearSelectionToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+			this.clearSelectionToolStripMenuItem.Text = "Clear selection";
+			this.clearSelectionToolStripMenuItem.Click += new System.EventHandler(this.clearSelectionToolStripMenuItem_Click);
+			// 
+			// deleteAreaToolStripMenuItem
+			// 
+			this.deleteAreaToolStripMenuItem.Name = "deleteAreaToolStripMenuItem";
+			this.deleteAreaToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
+			this.deleteAreaToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+			this.deleteAreaToolStripMenuItem.Text = "Delete area";
+			this.deleteAreaToolStripMenuItem.Click += new System.EventHandler(this.deleteAreaToolStripMenuItem_Click);
+			// 
+			// transformBtn
+			// 
+			this.transformBtn.Appearance = System.Windows.Forms.Appearance.Button;
+			this.transformBtn.FlatAppearance.BorderSize = 0;
+			this.transformBtn.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.transformBtn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.transformBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+			this.transformBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.transformBtn.ImageKey = "transform";
+			this.transformBtn.ImageList = this.toolsImageList;
+			this.transformBtn.Location = new System.Drawing.Point(4, 153);
+			this.transformBtn.Name = "transformBtn";
+			this.transformBtn.Size = new System.Drawing.Size(24, 24);
+			this.transformBtn.TabIndex = 5;
+			this.transformBtn.Tag = "transform";
+			this.toolTip.SetToolTip(this.transformBtn, "Transform");
+			this.transformBtn.UseVisualStyleBackColor = false;
+			this.transformBtn.Click += new System.EventHandler(this.toolBtn_Clicked);
+			// 
+			// extendBtn
+			// 
+			this.extendBtn.FlatAppearance.BorderSize = 0;
+			this.extendBtn.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.extendBtn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.extendBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+			this.extendBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.extendBtn.ImageKey = "extend";
+			this.extendBtn.ImageList = this.layerToolsImageList;
+			this.extendBtn.Location = new System.Drawing.Point(155, 1);
+			this.extendBtn.Margin = new System.Windows.Forms.Padding(1);
+			this.extendBtn.Name = "extendBtn";
+			this.extendBtn.Size = new System.Drawing.Size(20, 20);
+			this.extendBtn.TabIndex = 10;
+			this.extendBtn.Tag = "";
+			this.toolTip.SetToolTip(this.extendBtn, "Extend layer");
+			this.extendBtn.UseVisualStyleBackColor = false;
+			this.extendBtn.Click += new System.EventHandler(this.extendBtn_Click);
+			// 
+			// clipBtn
+			// 
+			this.clipBtn.FlatAppearance.BorderSize = 0;
+			this.clipBtn.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.clipBtn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.clipBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+			this.clipBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.clipBtn.ImageKey = "clip";
+			this.clipBtn.ImageList = this.layerToolsImageList;
+			this.clipBtn.Location = new System.Drawing.Point(177, 1);
+			this.clipBtn.Margin = new System.Windows.Forms.Padding(1);
+			this.clipBtn.Name = "clipBtn";
+			this.clipBtn.Size = new System.Drawing.Size(20, 20);
+			this.clipBtn.TabIndex = 11;
+			this.clipBtn.Tag = "";
+			this.toolTip.SetToolTip(this.clipBtn, "Clip layer");
+			this.clipBtn.UseVisualStyleBackColor = false;
+			this.clipBtn.Click += new System.EventHandler(this.clipBtn_Click);
 			// 
 			// MainForm
 			// 
@@ -1083,6 +1187,12 @@
 		private System.Windows.Forms.ContextMenuStrip adjustmentMenu;
 		private System.Windows.Forms.ToolStripMenuItem brightnessContrastToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem hueSaturationToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem copyBitmapToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem clearSelectionToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem deleteAreaToolStripMenuItem;
+		private System.Windows.Forms.RadioButton transformBtn;
+		private System.Windows.Forms.Button extendBtn;
+		private System.Windows.Forms.Button clipBtn;
 	}
 }
 
