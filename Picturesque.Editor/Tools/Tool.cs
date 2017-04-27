@@ -78,6 +78,13 @@ namespace Picturesque.Editor.Tools
 		{
 			return cursor;
 		}
+
+		public virtual void Init()
+		{
+		}
+		public virtual void Exit()
+		{
+		}
 	}
 
 	public interface IColorTool

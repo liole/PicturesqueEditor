@@ -263,13 +263,23 @@ namespace Picturesque.Editor
 			updatePixelInfo(new PointF(-1, -1));
 		}
 
+		private const Keys ARROW_KEYS = Keys.Up | Keys.Down | Keys.Left | Keys.Right;
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
 			if (Tool != null)
 			{
 				Tool.OnKeyPress(keyData, MouseButtons);
 			}
-			return base.ProcessCmdKey(ref msg, keyData);
+			switch (keyData)
+			{
+				case Keys.Up:
+				case Keys.Left:
+				case Keys.Down:
+				case Keys.Right:
+					return true;
+				default:
+					return base.ProcessCmdKey(ref msg, keyData);
+			}
 		}
 
 		private void updatePixelInfo(PointF location)
@@ -301,6 +311,10 @@ namespace Picturesque.Editor
 		private Dictionary<string, Tool> tools = new Dictionary<string,Tool>();
 		private void setTool(string name)
 		{
+			if (Tool != null)
+			{
+				Tool.Exit();
+			}
 			if (tools.ContainsKey(name))
 			{
 				Tool = tools[name];
@@ -325,6 +339,9 @@ namespace Picturesque.Editor
 					case "selection":
 						Tool = new SelectionTool(Project);
 						break;
+					case "transform":
+						Tool = new Transform(Project);
+						break;
 					default:
 						throw new ArgumentException();
 				}
@@ -332,6 +349,7 @@ namespace Picturesque.Editor
 				Tool.CursorChanged += Tool_CursorChanged;
 				tools[name] = Tool;
 			}
+			Tool.Init();
 			updateToolColor();
 			Tool_CursorChanged(this, null);
 			setToolPanel();

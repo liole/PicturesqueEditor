@@ -88,6 +88,13 @@
     <Compile Include="Tools\Eraser.cs" />
     <Compile Include="Tools\MoveTool.cs" />
     <Compile Include="Tools\ColorPicker.cs" />
+    <Compile Include="Tools\Properties\TransformToolProperties.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tools\Properties\TransformToolProperties.Designer.cs">
+      <DependentUpon>TransformToolProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\Transform.cs" />
     <Compile Include="Tools\Pencil.cs" />
     <Compile Include="Tools\Properties\SelectionProperties.cs">
       <SubType>UserControl</SubType>
@@ -133,6 +140,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Tools\Properties\TransformToolProperties.resx">
+      <DependentUpon>TransformToolProperties.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Tools\Properties\SelectionProperties.resx">
       <DependentUpon>SelectionProperties.cs</DependentUpon>
     </EmbeddedResource>

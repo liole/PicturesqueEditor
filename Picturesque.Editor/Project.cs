@@ -150,10 +150,21 @@ namespace Picturesque.Editor
 		public void SelectAll()
 		{
 			var path = new GraphicsPath();
-			path.AddRectangle(new Rectangle(
-				new Point(0, 0),
-				Image.Size
-			));
+			if (SelectedLayer is ImageLayer)
+			{
+				var imageLayer = SelectedLayer as ImageLayer;
+				path.AddRectangle(new RectangleF(
+					imageLayer.Position,
+					imageLayer.Image.Size
+				));
+			}
+			else
+			{
+				path.AddRectangle(new Rectangle(
+					new Point(0, 0),
+					Image.Size
+				));
+			}
 			CreateSelection(path);
 		}
 
@@ -231,6 +242,16 @@ namespace Picturesque.Editor
 				SelectedLayer.Paint(g);
 			}
 			return bmp;
+		}
+
+		public RectangleF GetSelectionBounds()
+		{
+			var bounds = new RectangleF(new PointF(0, 0), Image.Size);
+			if (Selection != null)
+			{
+				bounds = Selection.Path.GetBounds();
+			}
+			return bounds;
 		}
 
 		public void DeleteArea()

@@ -42,6 +42,31 @@ namespace Picturesque.Editor
 			}
 		}
 
+		public static void DrawRectangle(this Graphics g, Pen pen, RectangleF rect)
+		{
+			g.DrawRectangle(pen, rect.X, rect.Y, rect.Width, rect.Height);
+		}
+
+		public static void DrawFillSquare(this Graphics g, Pen pen, Brush brush, PointF pos, float size)
+		{
+			var rect = new RectangleF(
+				new PointF(pos.X - size/2, pos.Y - size/2),
+				new SizeF(size, size)
+			);
+			g.FillRectangle(brush, rect);
+			g.DrawRectangle(pen, rect);
+		}
+
+		public static void DrawFillCircle(this Graphics g, Pen pen, Brush brush, PointF pos, float size)
+		{
+			var rect = new RectangleF(
+				new PointF(pos.X - size / 2, pos.Y - size / 2),
+				new SizeF(size, size)
+			);
+			g.FillEllipse(brush, rect);
+			g.DrawEllipse(pen, rect);
+		}
+
 		public static PointF Unscale(this Point source, float scale)
 		{
 			return new PointF(
@@ -50,11 +75,63 @@ namespace Picturesque.Editor
 			);
 		}
 
+		public static PointF Relative (this PointF source, SizeF size)
+		{
+			return new PointF(
+				(float)source.X / size.Width,
+				(float)source.Y / size.Height
+			);
+		}
+
+		public static PointF UnRelative(this PointF source, SizeF size)
+		{
+			return new PointF(
+				(float)source.X * size.Width,
+				(float)source.Y * size.Height
+			);
+		}
+
+		public static PointF Factors(this PointF source, float fx, float fy)
+		{
+			return new PointF(
+				(float)source.X * fx,
+				(float)source.Y * fy
+			);
+		}
+
+		public static float DistanceTo(this PointF source, PointF center)
+		{
+			var s = source.Shift(center);
+			return (float)Math.Sqrt(s.X * s.X + s.Y * s.Y);
+		}
+
+		public static float Norm(this PointF source)
+		{
+			return (float)Math.Sqrt(source.X * source.X + source.Y * source.Y);
+		}
+
+		public static float Dot(this PointF a, PointF b)
+		{
+			return a.X * b.X + a.Y * b.Y;
+		}
+		public static float Cross(this PointF a, PointF b)
+		{
+			return a.X * b.Y - a.Y * b.X;
+		}
+
 		public static PointF Shift(this PointF source, PointF offset)
 		{
 			return new PointF(
 				source.X - offset.X,
 				source.Y - offset.Y
+			);
+		}
+
+		public static PointF Shift(this PointF source, float offsetX, float offsetY)
+		{
+			return new PointF(
+				source.X - offsetX,
+				source.Y - offsetY
 			);
 		}
 
@@ -66,9 +143,45 @@ namespace Picturesque.Editor
 			);
 		}
 
+		public static PointF Move(this PointF source, float offsetX, float offsetY)
+		{
+			return new PointF(
+				source.X + offsetX,
+				source.Y + offsetY
+			);
+		}
+
+		public static bool Capturing(this PointF location, PointF pos, float size)
+		{
+			return
+				location.X >= pos.X - size / 2 &&
+				location.X <= pos.X + size / 2 &&
+				location.Y >= pos.Y - size / 2 &&
+				location.Y <= pos.Y + size / 2;
+		}
+
+		public static bool Capturing(this PointF location, RectangleF rect)
+		{
+			return
+				location.X >= rect.Left &&
+				location.X <= rect.Right &&
+				location.Y >= rect.Top &&
+				location.Y <= rect.Bottom;
+		}
+
 		public static Point ToPoint(this PointF pt)
 		{
 			return new Point((int)pt.X, (int)pt.Y);
+		}
+
+		public static float ToDegrees(this double ang)
+		{
+			return (float)(ang / Math.PI * 180);
+		}
+
+		public static float ToRadians(this double ang)
+		{
+			return (float)(ang / 180 * Math.PI);
 		}
 
 		public static byte Truncate(int c)
