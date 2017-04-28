@@ -16,6 +16,11 @@ namespace Picturesque.Editor.Layers
 		public int Lightness { get; set; }
 		public bool Colorize { get; set; }
 
+		public HueLayer() :
+			base()
+		{
+		}
+
 		public HueLayer(Bitmap mask):
 			base(mask)
 		{

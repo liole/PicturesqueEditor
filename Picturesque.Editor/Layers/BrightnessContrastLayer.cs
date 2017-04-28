@@ -14,6 +14,11 @@ namespace Picturesque.Editor.Layers
 		public int Brightness { get; set; }
 		public int Contrast { get; set; }
 
+		public BrightnessContrastLayer() :
+			base()
+		{
+		}
+
 		public BrightnessContrastLayer(Bitmap mask):
 			base(mask)
 		{

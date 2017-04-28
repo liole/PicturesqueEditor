@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace Picturesque.Editor.Layers
 {
@@ -19,6 +22,8 @@ namespace Picturesque.Editor.Layers
 		Bitmap GetPreview(Size size);
 		void Invalidate();
 		void ShowProperties();
+
+		void Save(string directory, string name);
 	}
 
 	public interface IMovable: ILayer
@@ -33,5 +38,24 @@ namespace Picturesque.Editor.Layers
 		Bitmap StartEditing();
 		void ApplyChanges();
 		void DiscardChanges();
+	}
+
+	public static class Layers
+	{
+		public static ILayer Open(string directory, string name)
+		{
+			var xml = new XmlSerializer(typeof(ImageLayer), new[] { 
+				typeof(HueLayer), 
+				typeof(BrightnessContrastLayer)
+			});
+			ImageLayer layer;
+			using (var txt = new StreamReader(Path.Combine(directory, String.Format("{0}.xml", name))))
+			{
+				layer = xml.Deserialize(txt) as ImageLayer;
+			}
+			var image = new Bitmap(Path.Combine(directory, String.Format("{0}.png", name)));
+			layer.Image = image;
+			return layer;
+		}
 	}
 }

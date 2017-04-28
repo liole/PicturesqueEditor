@@ -6,6 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Picturesque.Editor.Layers;
+using System.IO;
+using System.IO.Compression;
+using System.Xml.Serialization;
 
 namespace Picturesque.Editor
 {
@@ -30,6 +33,20 @@ namespace Picturesque.Editor
 		public event EventHandler Invalidated;
 		public event EventHandler SelectedLayerChanged;
 		public event EventHandler LayersListChanged;
+
+		public Project(Size size)
+		{
+			Image = new Bitmap(size.Width, size.Height);
+			Layers = new List<ILayer>();
+		}
+
+		public Project(Bitmap bmp)
+		{
+			Image = new Bitmap(bmp.Width, bmp.Height);
+			Layers = new List<ILayer>();
+			SelectedLayer = AddLayer(new ImageLayer(bmp));
+			SelectedLayer.Name = "Image";
+		}
 
 		public Project(int width, int height, Color? background = null)
 		{
@@ -284,6 +301,45 @@ namespace Picturesque.Editor
 				var im = SelectedLayer as ImageLayer;
 				im.Clip(Image.Size);
 			}
+		}
+
+		public void Save(string filename)
+		{
+			var temp = Path.GetTempFileName();
+			File.Delete(temp);
+			Directory.CreateDirectory(temp);
+			for(int i = 0; i < Layers.Count; ++i)
+			{
+				Layers[i].Save(temp, i.ToString());
+			}
+			var xml = new XmlSerializer(typeof(Size));
+			using (var txt = new StreamWriter(Path.Combine(temp, "size.xml")))
+			{
+				xml.Serialize(txt, Image.Size);
+			}
+			ZipFile.CreateFromDirectory(temp, filename);
+		}
+
+		public static Project Open(string filename)
+		{
+			var temp = Path.GetTempFileName();
+			File.Delete(temp);
+			Directory.CreateDirectory(temp);
+			ZipFile.ExtractToDirectory(filename, temp);
+
+			Size size;
+			var xml = new XmlSerializer(typeof(Size));
+			using (var txt = new StreamReader(Path.Combine(temp, "size.xml")))
+			{
+				size = (Size)xml.Deserialize(txt);
+			}
+			var proj = new Project(size);
+			for (int i = 0; File.Exists(Path.Combine(temp, String.Format("{0}.xml", i))); ++i)
+			{
+				proj.AddLayer(Picturesque.Editor.Layers.Layers.Open(temp, i.ToString()));
+			}
+			proj.SelectedLayer = proj.Layers.First();
+			return proj;
 		}
 	}
 }

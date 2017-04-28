@@ -11,6 +11,11 @@ namespace Picturesque.Editor.Layers
 	{
 		public Bitmap Mask { get { return Image; } }
 
+		public MaskedLayer() :
+			base()
+		{
+		}
+
 		public MaskedLayer(Bitmap mask):
 			base(mask)
 		{

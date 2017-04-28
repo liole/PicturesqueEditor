@@ -24,8 +24,6 @@ namespace Picturesque.Editor
 		private float scale = 1.0f;
 		public Project Project { get; set; }
 		public Tool Tool { get; set; }
-		public string File { get; set; }
-		private bool changed = false;
 
 		public MainForm()
 		{
@@ -40,10 +38,6 @@ namespace Picturesque.Editor
 			canvasContainer.AutoScrollMargin = new Size(ASMargin, ASMargin);
 
 			propertiesPanel.AutoSize = true;
-
-			File = null;
-			saveProjectDialog.InitialDirectory = Directory.GetCurrentDirectory();
-			openProjectDialog.InitialDirectory = Directory.GetCurrentDirectory();
 		}
 
 #region user32.dll
@@ -173,38 +167,24 @@ namespace Picturesque.Editor
 			}
 		}
 
-		public void SetProject(Project proj)
+		private void newToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Project = proj;
+			Project = new Project(512, 512);
 			Project.Invalidated += Project_Invalidated;
 			Project.LayersListChanged += Project_LayersListChanged;
 			Project.SelectedLayerChanged += Project_SelectedLayerChanged;
+			var newLayer = Project.AddLayer() as ImageLayer;
+			var img = newLayer.Image;
+			using (var g = Graphics.FromImage(img))
+			{
+				g.DrawImage(new Bitmap(@"C:\Users\Oleg\Desktop\parrot200.jpg"), 0, 0);
+			}
+			Project.SelectedLayer = newLayer;
 			Project.Invalidate();
+			Project.SelectedLayer = Project.AddLayer(Layers.Layers.Open(@"C:\Users\Oleg\Desktop", "hs"));
 			canvas.Image = Project.Image;
 			Project_LayersListChanged(this, null);
 			repositionCanvas();
-			changed = false;
-			UpdateTitle();
-		}
-
-		private void newToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SetProject(new Project(512, 512));
-			//Project = new Project(512, 512);
-			//Project.Invalidated += Project_Invalidated;
-			//Project.LayersListChanged += Project_LayersListChanged;
-			//Project.SelectedLayerChanged += Project_SelectedLayerChanged;
-			//var newLayer = Project.AddLayer() as ImageLayer;
-			//var img = newLayer.Image;
-			//using (var g = Graphics.FromImage(img))
-			//{
-			//	g.DrawImage(new Bitmap(@"C:\Users\Oleg\Desktop\parrot200.jpg"), 0, 0);
-			//}
-			//Project.SelectedLayer = newLayer;
-			//Project.Invalidate();
-			//canvas.Image = Project.Image;
-			//Project_LayersListChanged(this, null);
-			//repositionCanvas();
 		}
 
 		void Project_SelectedLayerChanged(object sender, EventArgs e)
@@ -248,8 +228,6 @@ namespace Picturesque.Editor
 
 		void Project_Invalidated(object sender, EventArgs e)
 		{
-			changed = true;
-			UpdateTitle();
 			canvas.Invalidate();
 		}
 
@@ -532,6 +510,7 @@ namespace Picturesque.Editor
 			Project.SelectedLayer = Project.AddLayer(
 				new HueLayer(Project.GetMask()));
 			Project.SelectedLayer.ShowProperties();
+			//Project.SelectedLayer.Save(@"C:\Users\Oleg\Desktop", "hs");
 		}
 
 		private void copyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -592,121 +571,6 @@ namespace Picturesque.Editor
 		private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Project.SelectAll();
-		}
-
-		private void save()
-		{
-			if (System.IO.File.Exists(File))
-			{
-				System.IO.File.Delete(File);
-			}
-			Project.Save(File);
-			changed = false;
-			UpdateTitle();
-		}
-
-		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (File == null)
-			{
-				saveAsToolStripMenuItem_Click(sender, e);
-			}
-			else
-			{
-				save();
-			}
-		}
-
-		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (saveProjectDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-			{
-				File = saveProjectDialog.FileName;
-				save();
-			}
-		}
-
-		private void openToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (TryExit())
-			{
-				if (openProjectDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-				{
-					if (System.IO.Path.GetExtension(openProjectDialog.FileName) == ".pep")
-					{
-						File = openProjectDialog.FileName;
-						SetProject(Project.Open(File));
-					}
-					else
-					{
-						File = null;
-						var image = new Bitmap(openProjectDialog.FileName);
-						SetProject(new Project(image));
-					}
-				}
-			}
-		}
-
-		public void UpdateTitle()
-		{
-			var name = "New Project";
-			if (File != null)
-			{
-				name = File;
-			}
-			if (changed)
-			{
-				name += "*";
-			}
-			Text = String.Format("{0} - Picturesque Editor", name);
-		}
-
-		public bool TryExit()
-		{
-			if (!changed)
-			{
-				return true;
-			}
-			else
-			{
-				var res = MessageBox.Show(
-					"Do you want to save changes to your project?",
-					"Confirm operation",
-					MessageBoxButtons.YesNoCancel,
-					MessageBoxIcon.Question
-				);
-				if (res == System.Windows.Forms.DialogResult.Yes)
-				{
-					saveToolStripMenuItem_Click(this, null);
-					if (File == null)
-					{
-						return false;
-					}
-				}
-				if (res == System.Windows.Forms.DialogResult.Cancel)
-				{
-					return false;
-				}
-				return true;
-			}
-		}
-
-		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
-		private void exportToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			if (!TryExit())
-			{
-				e.Cancel = true;
-			}
 		}
 	}
 }

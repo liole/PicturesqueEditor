@@ -7,15 +7,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Picturesque.Editor.Layers.Properties;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace Picturesque.Editor.Layers
 {
+	[Serializable]
 	public class ImageLayer: ILayer, IMovable, IEditable
 	{
 		public string Name { get; set; }
 		public bool Visible { get; set; }
 		public ColorMatrix ColorMatrix { get; set; }
-		public Bitmap Image { get; private set; }
+		[XmlIgnore]
+		public Bitmap Image { get; internal set; }
 		private Bitmap prev { get; set; }
 		private PointF position;
 		public PointF Position {
@@ -24,6 +28,10 @@ namespace Picturesque.Editor.Layers
 		}
 		
 		public event EventHandler<EventArgs> Invalidated;
+
+		public ImageLayer()
+		{
+		}
 
 		public ImageLayer(Bitmap bmp)
 		{
@@ -254,6 +262,16 @@ namespace Picturesque.Editor.Layers
 			Position = pos;
 			Image = bmp;
 			Invalidate();
+		}
+
+		public void Save(string directory, string name)
+		{
+			var xml = new XmlSerializer(typeof(ImageLayer), new[] { this.GetType() });
+			using (var txt = new StreamWriter(Path.Combine(directory, String.Format("{0}.xml", name))))
+			{
+				xml.Serialize(txt, this);
+			}
+			Image.Save(Path.Combine(directory, String.Format("{0}.png", name)), ImageFormat.Png);
 		}
 	}
 }

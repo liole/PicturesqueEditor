@@ -128,7 +128,9 @@ namespace Picturesque.Editor.Tools
 				{
 					var pos = imageLayer.Position;
 					toLayer = true;
+					g.TranslateTransform(-pos.X, -pos.Y);
 					Paint(g);
+					g.TranslateTransform(pos.X, pos.Y);
 					toLayer = false;
 				}
 			}
