@@ -27,15 +27,18 @@ namespace Picturesque.Editor
 		public string File { get; set; }
 		private bool changed = false;
 
+		private NewProjectDialog newProjectDialog;
+
 		public MainForm()
 		{
 			InitializeComponent();
+			newProjectDialog = new NewProjectDialog();
 			canvas.MouseWheel += canvas_MouseWheel;
 			canvasContainer.MouseWheel += canvas_MouseWheel;
 			setTrasparentBackground();
 
-			newToolStripMenuItem.PerformClick();
-			toolBtn_Clicked(moveBtn, null);
+			//newToolStripMenuItem.PerformClick();
+			SetProject(new Project(512, 512));
 			updatePixelInfo(new PointF(-1, -1));
 			canvasContainer.AutoScrollMargin = new Size(ASMargin, ASMargin);
 
@@ -175,6 +178,12 @@ namespace Picturesque.Editor
 
 		public void SetProject(Project proj)
 		{
+			if (Project != null)
+			{
+				Project.Invalidated -= Project_Invalidated;
+				Project.LayersListChanged -= Project_LayersListChanged;
+				Project.SelectedLayerChanged -= Project_SelectedLayerChanged;
+			}
 			Project = proj;
 			Project.Invalidated += Project_Invalidated;
 			Project.LayersListChanged += Project_LayersListChanged;
@@ -185,11 +194,29 @@ namespace Picturesque.Editor
 			repositionCanvas();
 			changed = false;
 			UpdateTitle();
+			tools = new Dictionary<string, Tools.Tool>();
+			toolBtn_Clicked(moveBtn, null);
 		}
 
 		private void newToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SetProject(new Project(512, 512));
+			if (TryExit())
+			{
+				if (newProjectDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+				{
+					var proj = new Project(
+						newProjectDialog.WidthValue,
+						newProjectDialog.HeightValue
+					);
+					if (newProjectDialog.UseBackground)
+					{
+						proj.AddLayer(newProjectDialog.BackgrounColor);
+					}
+					proj.MoveUp();
+					SetProject(proj);
+				}
+			}
+			//SetProject(new Project(512, 512));
 			//Project = new Project(512, 512);
 			//Project.Invalidated += Project_Invalidated;
 			//Project.LayersListChanged += Project_LayersListChanged;
@@ -641,6 +668,8 @@ namespace Picturesque.Editor
 					{
 						File = null;
 						var image = new Bitmap(openProjectDialog.FileName);
+						var dpi = Program.GetDPI();
+						image.SetResolution(dpi, dpi);
 						SetProject(new Project(image));
 					}
 				}

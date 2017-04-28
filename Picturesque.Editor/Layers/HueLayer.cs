@@ -76,9 +76,10 @@ namespace Picturesque.Editor.Layers
 			var layerProps = new HueProperties();
 			layerProps.Name = Name;
 			layerProps.Hue = Hue;
+			layerProps.Colorize = Colorize;
 			layerProps.Saturation = Saturation;
 			layerProps.Lightness = Lightness;
-			layerProps.Colorize = Colorize;
+			layerProps.UpdateHueRange();
 			var prevH = Hue;
 			var prevS = Saturation;
 			var prevL = Lightness;

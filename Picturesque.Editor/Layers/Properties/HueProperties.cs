@@ -109,7 +109,7 @@ namespace Picturesque.Editor.Layers.Properties
 			update();
 		}
 
-		private void colorizeChkBox_CheckedChanged(object sender, EventArgs e)
+		public void UpdateHueRange()
 		{
 			if (colorizeChkBox.Checked)
 			{
@@ -125,6 +125,11 @@ namespace Picturesque.Editor.Layers.Properties
 				hueTrackBar.Minimum = -180;
 				hueTrackBar.Maximum = 180;
 			}
+		}
+
+		private void colorizeChkBox_CheckedChanged(object sender, EventArgs e)
+		{
+			UpdateHueRange();
 			update();
 		}
 

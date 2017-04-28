@@ -112,7 +112,7 @@
 			// 
 			this.hueTrackBar.AutoSize = false;
 			this.hueTrackBar.Location = new System.Drawing.Point(6, 47);
-			this.hueTrackBar.Maximum = 180;
+			this.hueTrackBar.Maximum = 360;
 			this.hueTrackBar.Minimum = -180;
 			this.hueTrackBar.Name = "hueTrackBar";
 			this.hueTrackBar.Size = new System.Drawing.Size(227, 28);
@@ -235,7 +235,7 @@
 			this.hueValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.hueValue.Location = new System.Drawing.Point(171, 19);
 			this.hueValue.Maximum = new decimal(new int[] {
-            180,
+            360,
             0,
             0,
             0});

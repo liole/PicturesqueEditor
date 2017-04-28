@@ -53,7 +53,7 @@ namespace Picturesque.Editor
 			Image = new Bitmap(width, height);
 			Layers = new List<ILayer>();
 			SelectedLayer = AddLayer(background);
-			SelectedLayer.Name = "Background";
+			SelectedLayer.Name = "Canvas";
 		}
 
 		public ILayer AddLayer(Color? background = null)

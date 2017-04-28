@@ -54,6 +54,8 @@ namespace Picturesque.Editor.Layers
 				layer = xml.Deserialize(txt) as ImageLayer;
 			}
 			var image = new Bitmap(Path.Combine(directory, String.Format("{0}.png", name)));
+			var dpi = Program.GetDPI();
+			image.SetResolution(dpi, dpi);
 			layer.Image = image;
 			return layer;
 		}
