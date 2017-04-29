@@ -29,12 +29,12 @@ namespace Picturesque.Editor.Layers
 
 		public override void Draw(Bitmap canvas)
 		{
-			throw new NotImplementedException();
+			throw new InvalidOperationException();
 		}
 
 		public override void ShowProperties()
 		{
-			throw new NotImplementedException();
+			throw new InvalidOperationException();
 		}
 	}
 }

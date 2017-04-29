@@ -256,7 +256,15 @@ namespace Picturesque.Editor
 				{
 					g.Clip = new Region(Selection.Path);
 				}
+				if (SelectedLayer is MaskedLayer)
+				{
+					(SelectedLayer as MaskedLayer).ColorMatrix.Matrix33 = 1;
+				}
 				SelectedLayer.Paint(g);
+				if (SelectedLayer is MaskedLayer)
+				{
+					(SelectedLayer as MaskedLayer).ColorMatrix.Matrix33 = 0.5f;
+				}
 			}
 			return bmp;
 		}

@@ -47,6 +47,7 @@ namespace Picturesque.Editor
 			File = null;
 			saveProjectDialog.InitialDirectory = Directory.GetCurrentDirectory();
 			openProjectDialog.InitialDirectory = Directory.GetCurrentDirectory();
+			saveImageDialog.InitialDirectory = Directory.GetCurrentDirectory();
 		}
 
 #region user32.dll
@@ -195,7 +196,7 @@ namespace Picturesque.Editor
 			changed = false;
 			UpdateTitle();
 			tools = new Dictionary<string, Tools.Tool>();
-			toolBtn_Clicked(moveBtn, null);
+			moveBtn.PerformClick();
 		}
 
 		private void newToolStripMenuItem_Click(object sender, EventArgs e)
@@ -210,7 +211,8 @@ namespace Picturesque.Editor
 					);
 					if (newProjectDialog.UseBackground)
 					{
-						proj.AddLayer(newProjectDialog.BackgrounColor);
+						var bg = proj.AddLayer(newProjectDialog.BackgrounColor);
+						bg.Name = "Background";
 					}
 					proj.MoveUp();
 					SetProject(proj);
@@ -653,25 +655,30 @@ namespace Picturesque.Editor
 			}
 		}
 
+		public void open(string filename)
+		{
+			if (System.IO.Path.GetExtension(filename) == ".pep")
+			{
+				File = filename;
+				SetProject(Project.Open(File));
+			}
+			else
+			{
+				File = null;
+				var image = new Bitmap(filename);
+				var dpi = Program.GetDPI();
+				image.SetResolution(dpi, dpi);
+				SetProject(new Project(image));
+			}
+		}
+
 		private void openToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (TryExit())
 			{
 				if (openProjectDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 				{
-					if (System.IO.Path.GetExtension(openProjectDialog.FileName) == ".pep")
-					{
-						File = openProjectDialog.FileName;
-						SetProject(Project.Open(File));
-					}
-					else
-					{
-						File = null;
-						var image = new Bitmap(openProjectDialog.FileName);
-						var dpi = Program.GetDPI();
-						image.SetResolution(dpi, dpi);
-						SetProject(new Project(image));
-					}
+					open(openProjectDialog.FileName);
 				}
 			}
 		}
@@ -727,7 +734,24 @@ namespace Picturesque.Editor
 
 		private void exportToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
+			if (saveImageDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				switch(saveImageDialog.FilterIndex)
+				{
+					case 1:
+						Project.Image.Save(saveImageDialog.FileName, ImageFormat.Png);
+						break;
+					case 2:
+						Project.Image.Save(saveImageDialog.FileName, ImageFormat.Jpeg);
+						break;
+					case 3:
+						Project.Image.Save(saveImageDialog.FileName, ImageFormat.Bmp);
+						break;
+					case 4:
+						Project.Image.Save(saveImageDialog.FileName, ImageFormat.Gif);
+						break;
+				}
+			}
 		}
 
 		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -735,6 +759,50 @@ namespace Picturesque.Editor
 			if (!TryExit())
 			{
 				e.Cancel = true;
+			}
+		}
+
+		private bool drag = false;
+		private void canvasContainer_DragEnter(object sender, DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent(DataFormats.FileDrop))
+			{
+				e.Effect = DragDropEffects.Copy;
+				drag = true;
+				canvasContainer.Invalidate();
+			}
+		}
+
+		private void canvasContainer_DragLeave(object sender, EventArgs e)
+		{
+			drag = false;
+			canvasContainer.Invalidate();
+		}
+
+		private void canvasContainer_Paint(object sender, PaintEventArgs e)
+		{
+			if (drag)
+			{
+				var g = e.Graphics;
+				using (var pen = new Pen(Color.White, 20)
+				{
+					DashStyle = System.Drawing.Drawing2D.DashStyle.Dash
+				})
+				{
+					g.DrawRectangle(pen, canvasContainer.ClientRectangle);
+				}
+			}
+		}
+
+		private void canvasContainer_DragDrop(object sender, DragEventArgs e)
+		{
+			drag = false;
+			canvasContainer.Invalidate();
+			string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+			string file = files.First();
+			if (TryExit())
+			{
+				open(file);
 			}
 		}
 	}
