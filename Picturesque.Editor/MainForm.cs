@@ -258,8 +258,10 @@ namespace Picturesque.Editor
 			}
 			upLayerBtn.Enabled = Project.SelectedLayer != Project.Layers.Last();
 			moveUpToolStripMenuItem.Enabled = upLayerBtn.Enabled;
+			moveUpToolStripMenuItem1.Enabled = upLayerBtn.Enabled;
 			downLayerBtn.Enabled = Project.SelectedLayer != Project.Layers.First();
 			moveDownToolStripMenuItem.Enabled = downLayerBtn.Enabled;
+			moveDownToolStripMenuItem1.Enabled = downLayerBtn.Enabled;
 		}
 
 		void Project_SelectionChanged(object sender, EventArgs e)
@@ -289,10 +291,13 @@ namespace Picturesque.Editor
 			layersList.ResumeLayout();
 			deleteLayerBtn.Enabled = Project.Layers.Count > 1;
 			removeToolStripMenuItem.Enabled = deleteLayerBtn.Enabled;
+			removeToolStripMenuItem1.Enabled = deleteLayerBtn.Enabled;
 			upLayerBtn.Enabled = Project.SelectedLayer != Project.Layers.Last();
 			moveUpToolStripMenuItem.Enabled = upLayerBtn.Enabled;
+			moveUpToolStripMenuItem1.Enabled = upLayerBtn.Enabled;
 			downLayerBtn.Enabled = Project.SelectedLayer != Project.Layers.First();
 			moveDownToolStripMenuItem.Enabled = downLayerBtn.Enabled;
+			moveDownToolStripMenuItem1.Enabled = downLayerBtn.Enabled;
 		}
 
 		void layerListItem_Click(object sender, EventArgs e)
@@ -310,6 +315,7 @@ namespace Picturesque.Editor
 
 		private void canvas_MouseDown(object sender, MouseEventArgs e)
 		{
+			canvas.Focus();
 			var loc = e.Location.Unscale(Scale);
 			if (Tool != null)
 			{
@@ -419,6 +425,9 @@ namespace Picturesque.Editor
 						break;
 					case "transform":
 						Tool = new Transform(Project);
+						break;
+					case "shape":
+						Tool = new Shape(Project, MyForeColor, MyBackColor, 2);
 						break;
 					default:
 						throw new ArgumentException();

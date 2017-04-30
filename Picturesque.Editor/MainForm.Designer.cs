@@ -158,6 +158,8 @@
 			this.saveProjectDialog = new System.Windows.Forms.SaveFileDialog();
 			this.openProjectDialog = new System.Windows.Forms.OpenFileDialog();
 			this.saveImageDialog = new System.Windows.Forms.SaveFileDialog();
+			this.shapeBtn = new System.Windows.Forms.RadioButton();
+			this.shapeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolbar.SuspendLayout();
 			this.toolbarLayout.SuspendLayout();
 			this.canvasContainer.SuspendLayout();
@@ -195,6 +197,7 @@
 			this.toolbarLayout.Controls.Add(this.pickerBtn);
 			this.toolbarLayout.Controls.Add(this.selectionBtn);
 			this.toolbarLayout.Controls.Add(this.transformBtn);
+			this.toolbarLayout.Controls.Add(this.shapeBtn);
 			this.toolbarLayout.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolbarLayout.Location = new System.Drawing.Point(0, 16);
 			this.toolbarLayout.Name = "toolbarLayout";
@@ -233,6 +236,7 @@
 			this.toolsImageList.Images.SetKeyName(3, "eraser");
 			this.toolsImageList.Images.SetKeyName(4, "select");
 			this.toolsImageList.Images.SetKeyName(5, "transform");
+			this.toolsImageList.Images.SetKeyName(6, "shape");
 			// 
 			// pencilBtn
 			// 
@@ -709,7 +713,8 @@
             this.eraserToolStripMenuItem,
             this.colorPickerToolStripMenuItem,
             this.selectionToolStripMenuItem,
-            this.transformToolStripMenuItem});
+            this.transformToolStripMenuItem,
+            this.shapeToolStripMenuItem});
 			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
 			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
 			this.toolsToolStripMenuItem.Text = "&Tools";
@@ -1518,6 +1523,32 @@
 			this.saveImageDialog.Filter = "PNG file (*.png)|*.png|JPEG file (*.jpg)|*.jpg|BMP file (*.bmp)|*.bmp|GIF file (*" +
     ".gif)|*.gif";
 			// 
+			// shapeBtn
+			// 
+			this.shapeBtn.Appearance = System.Windows.Forms.Appearance.Button;
+			this.shapeBtn.FlatAppearance.BorderSize = 0;
+			this.shapeBtn.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.shapeBtn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.shapeBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+			this.shapeBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.shapeBtn.ImageKey = "shape";
+			this.shapeBtn.ImageList = this.toolsImageList;
+			this.shapeBtn.Location = new System.Drawing.Point(4, 183);
+			this.shapeBtn.Name = "shapeBtn";
+			this.shapeBtn.Size = new System.Drawing.Size(24, 24);
+			this.shapeBtn.TabIndex = 6;
+			this.shapeBtn.Tag = "shape";
+			this.toolTip.SetToolTip(this.shapeBtn, "Shape");
+			this.shapeBtn.UseVisualStyleBackColor = false;
+			this.shapeBtn.Click += new System.EventHandler(this.toolBtn_Clicked);
+			// 
+			// shapeToolStripMenuItem
+			// 
+			this.shapeToolStripMenuItem.Name = "shapeToolStripMenuItem";
+			this.shapeToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+			this.shapeToolStripMenuItem.Text = "Shape";
+			this.shapeToolStripMenuItem.Click += new System.EventHandler(this.toolBtn_Clicked);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1694,6 +1725,8 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem10;
 		private System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem mergeAllToolStripMenuItem;
+		private System.Windows.Forms.RadioButton shapeBtn;
+		private System.Windows.Forms.ToolStripMenuItem shapeToolStripMenuItem;
 	}
 }
 

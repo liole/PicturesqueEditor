@@ -14,7 +14,6 @@ namespace Picturesque.Editor.Tools
 	{
 		public static Color CursorBorder = Color.Black;
 
-		public PointF initPosition { get; set; }
 		public Color Color { get; set; }
 		private float width { get; set; }
 

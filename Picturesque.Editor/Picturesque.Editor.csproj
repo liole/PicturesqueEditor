@@ -95,6 +95,13 @@
     <Compile Include="Tools\Eraser.cs" />
     <Compile Include="Tools\MoveTool.cs" />
     <Compile Include="Tools\ColorPicker.cs" />
+    <Compile Include="Tools\Properties\ShapeProperties.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tools\Properties\ShapeProperties.Designer.cs">
+      <DependentUpon>ShapeProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\Shape.cs" />
     <Compile Include="Tools\Properties\TransformToolProperties.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -150,6 +157,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Tools\Properties\ShapeProperties.resx">
+      <DependentUpon>ShapeProperties.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Tools\Properties\TransformToolProperties.resx">
       <DependentUpon>TransformToolProperties.cs</DependentUpon>
     </EmbeddedResource>
