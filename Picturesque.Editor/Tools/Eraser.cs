@@ -10,7 +10,7 @@ namespace Picturesque.Editor.Tools
 {
 	public class Eraser: Pencil
 	{
-		public Eraser(Project project, float widthP):
+		public Eraser(Project project, float widthP = 10):
 			base(project, Color.Transparent, widthP)
 		{
 		}

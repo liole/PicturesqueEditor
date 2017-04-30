@@ -160,6 +160,8 @@
 			this.saveImageDialog = new System.Windows.Forms.SaveFileDialog();
 			this.shapeBtn = new System.Windows.Forms.RadioButton();
 			this.shapeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.stampBtn = new System.Windows.Forms.RadioButton();
+			this.cloneStampToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolbar.SuspendLayout();
 			this.toolbarLayout.SuspendLayout();
 			this.canvasContainer.SuspendLayout();
@@ -198,6 +200,7 @@
 			this.toolbarLayout.Controls.Add(this.selectionBtn);
 			this.toolbarLayout.Controls.Add(this.transformBtn);
 			this.toolbarLayout.Controls.Add(this.shapeBtn);
+			this.toolbarLayout.Controls.Add(this.stampBtn);
 			this.toolbarLayout.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolbarLayout.Location = new System.Drawing.Point(0, 16);
 			this.toolbarLayout.Name = "toolbarLayout";
@@ -237,6 +240,7 @@
 			this.toolsImageList.Images.SetKeyName(4, "select");
 			this.toolsImageList.Images.SetKeyName(5, "transform");
 			this.toolsImageList.Images.SetKeyName(6, "shape");
+			this.toolsImageList.Images.SetKeyName(7, "stamp");
 			// 
 			// pencilBtn
 			// 
@@ -714,7 +718,8 @@
             this.colorPickerToolStripMenuItem,
             this.selectionToolStripMenuItem,
             this.transformToolStripMenuItem,
-            this.shapeToolStripMenuItem});
+            this.shapeToolStripMenuItem,
+            this.cloneStampToolStripMenuItem});
 			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
 			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
 			this.toolsToolStripMenuItem.Text = "&Tools";
@@ -1546,8 +1551,36 @@
 			// 
 			this.shapeToolStripMenuItem.Name = "shapeToolStripMenuItem";
 			this.shapeToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+			this.shapeToolStripMenuItem.Tag = "shape";
 			this.shapeToolStripMenuItem.Text = "Shape";
 			this.shapeToolStripMenuItem.Click += new System.EventHandler(this.toolBtn_Clicked);
+			// 
+			// stampBtn
+			// 
+			this.stampBtn.Appearance = System.Windows.Forms.Appearance.Button;
+			this.stampBtn.FlatAppearance.BorderSize = 0;
+			this.stampBtn.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.stampBtn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.stampBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+			this.stampBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.stampBtn.ImageKey = "stamp";
+			this.stampBtn.ImageList = this.toolsImageList;
+			this.stampBtn.Location = new System.Drawing.Point(4, 213);
+			this.stampBtn.Name = "stampBtn";
+			this.stampBtn.Size = new System.Drawing.Size(24, 24);
+			this.stampBtn.TabIndex = 7;
+			this.stampBtn.Tag = "stamp";
+			this.toolTip.SetToolTip(this.stampBtn, "Clone Stamp");
+			this.stampBtn.UseVisualStyleBackColor = false;
+			this.stampBtn.Click += new System.EventHandler(this.toolBtn_Clicked);
+			// 
+			// cloneStampToolStripMenuItem
+			// 
+			this.cloneStampToolStripMenuItem.Name = "cloneStampToolStripMenuItem";
+			this.cloneStampToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+			this.cloneStampToolStripMenuItem.Tag = "stamp";
+			this.cloneStampToolStripMenuItem.Text = "Clone stamp";
+			this.cloneStampToolStripMenuItem.Click += new System.EventHandler(this.toolBtn_Clicked);
 			// 
 			// MainForm
 			// 
@@ -1727,6 +1760,8 @@
 		private System.Windows.Forms.ToolStripMenuItem mergeAllToolStripMenuItem;
 		private System.Windows.Forms.RadioButton shapeBtn;
 		private System.Windows.Forms.ToolStripMenuItem shapeToolStripMenuItem;
+		private System.Windows.Forms.RadioButton stampBtn;
+		private System.Windows.Forms.ToolStripMenuItem cloneStampToolStripMenuItem;
 	}
 }
 

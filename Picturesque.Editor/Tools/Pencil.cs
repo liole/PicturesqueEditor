@@ -167,6 +167,7 @@ namespace Picturesque.Editor.Tools
 				var editableLayer = Project.SelectedLayer as IEditable;
 				points.Clear();
 				editableLayer.DiscardChanges();
+				img = null;
 			}
 		}
 
@@ -196,7 +197,7 @@ namespace Picturesque.Editor.Tools
 			return new Cursor(cur.GetHicon());
 		}
 
-		private void setCursor()
+		protected void setCursor()
 		{
 			if (Project.SelectedLayer is IEditable)
 			{

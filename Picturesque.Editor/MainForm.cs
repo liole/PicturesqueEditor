@@ -429,6 +429,9 @@ namespace Picturesque.Editor
 					case "shape":
 						Tool = new Shape(Project, MyForeColor, MyBackColor, 2);
 						break;
+					case "stamp":
+						Tool = new CloneStamp(Project, 25);
+						break;
 					default:
 						throw new ArgumentException();
 				}
