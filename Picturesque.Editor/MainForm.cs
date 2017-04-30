@@ -19,8 +19,8 @@ namespace Picturesque.Editor
 	public partial class MainForm : Form
 	{
 		public int ASMargin = 25;
-		public float MinScale = 0.05f;
-		public float MaxScale = 5f;
+		public float MaxScale = 7.5f;
+		public float MinScale = 1f / 7.5f;
 		private float scale = 1.0f;
 		public Project Project { get; set; }
 		public Tool Tool { get; set; }
@@ -48,6 +48,12 @@ namespace Picturesque.Editor
 			saveProjectDialog.InitialDirectory = Directory.GetCurrentDirectory();
 			openProjectDialog.InitialDirectory = Directory.GetCurrentDirectory();
 			saveImageDialog.InitialDirectory = Directory.GetCurrentDirectory();
+
+			zoomValue.Maximum = (int)(MaxScale * 100);
+			zoomValue.Minimum = (int)(MinScale * 100);
+			zoomBar.Minimum = (int)(Math.Log(MinScale, 10) * 10 - 1);
+			zoomBar.Maximum = (int)(Math.Log(MaxScale, 10) * 10 + 1);
+
 		}
 
 #region user32.dll
@@ -74,11 +80,14 @@ namespace Picturesque.Editor
 
 #endregion
 
+		private bool changingScale = false;
 		public new float Scale
 		{
 			get { return scale; }
 			set
 			{
+				if (changingScale) return;
+				changingScale = true;
 				scale = value;
 				if (scale > MaxScale)
 				{
@@ -93,6 +102,9 @@ namespace Picturesque.Editor
 				{
 					canvas.Cursor = Tool.GetCursor(Scale);
 				}
+				zoomValue.Value = (int)(scale * 100);
+				zoomBar.Value = (int)(Math.Log(scale, 10) * 10);
+				changingScale = false;
 			}
 		}
 
@@ -184,11 +196,13 @@ namespace Picturesque.Editor
 				Project.Invalidated -= Project_Invalidated;
 				Project.LayersListChanged -= Project_LayersListChanged;
 				Project.SelectedLayerChanged -= Project_SelectedLayerChanged;
+				Project.SelectionChanged -= Project_SelectionChanged;
 			}
 			Project = proj;
 			Project.Invalidated += Project_Invalidated;
 			Project.LayersListChanged += Project_LayersListChanged;
 			Project.SelectedLayerChanged += Project_SelectedLayerChanged;
+			Project.SelectionChanged += Project_SelectionChanged;
 			Project.Invalidate();
 			canvas.Image = Project.Image;
 			Project_LayersListChanged(this, null);
@@ -243,7 +257,16 @@ namespace Picturesque.Editor
 				layer.Selected = layer.Model == Project.SelectedLayer;
 			}
 			upLayerBtn.Enabled = Project.SelectedLayer != Project.Layers.Last();
+			moveUpToolStripMenuItem.Enabled = upLayerBtn.Enabled;
 			downLayerBtn.Enabled = Project.SelectedLayer != Project.Layers.First();
+			moveDownToolStripMenuItem.Enabled = downLayerBtn.Enabled;
+		}
+
+		void Project_SelectionChanged(object sender, EventArgs e)
+		{
+			copyToolStripMenuItem.Enabled = Project.Selection != null;
+			copyBitmapToolStripMenuItem.Enabled = Project.Selection != null;
+			cutToolStripMenuItem.Enabled = Project.Selection != null;
 		}
 
 		void Project_LayersListChanged(object sender, EventArgs e)
@@ -265,8 +288,11 @@ namespace Picturesque.Editor
 			ResumeDrawing(layersList);
 			layersList.ResumeLayout();
 			deleteLayerBtn.Enabled = Project.Layers.Count > 1;
+			removeToolStripMenuItem.Enabled = deleteLayerBtn.Enabled;
 			upLayerBtn.Enabled = Project.SelectedLayer != Project.Layers.Last();
+			moveUpToolStripMenuItem.Enabled = upLayerBtn.Enabled;
 			downLayerBtn.Enabled = Project.SelectedLayer != Project.Layers.First();
+			moveDownToolStripMenuItem.Enabled = downLayerBtn.Enabled;
 		}
 
 		void layerListItem_Click(object sender, EventArgs e)
@@ -438,8 +464,22 @@ namespace Picturesque.Editor
 
 		private void toolBtn_Clicked(object sender, EventArgs e)
 		{
-			var ctrl = sender as Control;
+			var ctrl = sender as dynamic;
 			setTool(ctrl.Tag as string);
+			if (!(sender is RadioButton))
+			{
+				toolbarLayout.Controls.OfType<RadioButton>().Where(c => c.Tag == ctrl.Tag).First().Checked = true;
+			}
+			mapToolMenu();
+		}
+
+		private void mapToolMenu()
+		{
+			for (int i = 0; i < toolbarLayout.Controls.Count; ++i)
+			{
+				(toolsToolStripMenuItem.DropDownItems[i] as ToolStripMenuItem).Checked =
+					(toolbarLayout.Controls[i] as RadioButton).Checked;
+			}
 		}
 
 		private void toolbarSizeBtn_Click(object sender, EventArgs e)
@@ -447,6 +487,7 @@ namespace Picturesque.Editor
 			var more = toolbar.Width < 48;
 			toolbar.Width = more ? 64 : 32;
 			toolbarSizeBtn.Text = more ? "<<" : ">>";
+			wideToolboxToolStripMenuItem.Checked = more;
 		}
 
 		private void layersList_Resize(object sender, EventArgs e)
@@ -571,12 +612,14 @@ namespace Picturesque.Editor
 			IDataObject dataObject = new DataObject();
 			dataObject.SetData("PNG", false, ms);
 			Clipboard.SetDataObject(dataObject, true);
+			pasteToolStripMenuItem.Enabled = true;
 		}
 
 		private void copyBitmapToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			var bmp = Project.GetSelection();
 			Clipboard.SetImage(bmp);
+			pasteToolStripMenuItem.Enabled = true;
 		}
 
 		private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
@@ -805,5 +848,82 @@ namespace Picturesque.Editor
 				open(file);
 			}
 		}
+
+		private void MainForm_Activated(object sender, EventArgs e)
+		{
+			copyToolStripMenuItem.Enabled = Project.Selection != null;
+			copyBitmapToolStripMenuItem.Enabled = Project.Selection != null;
+			cutToolStripMenuItem.Enabled = Project.Selection != null;
+			pasteToolStripMenuItem.Enabled = GraphicsUtils.GetImageFromClipboard() is Bitmap;
+		}
+
+		private void layersToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			layersPanel.Visible = layersToolStripMenuItem.Checked;
+			layersSplitter.Visible = layersToolStripMenuItem.Checked;
+		}
+
+		private void toolboxToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			toolbar.Visible = toolboxToolStripMenuItem.Checked;
+			toolbarSplitter.Visible = toolboxToolStripMenuItem.Checked;
+		}
+
+		private void sidePanelToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			sidebar.Visible = sidePanelToolStripMenuItem.Checked;
+			sidebarSplitter.Visible = sidePanelToolStripMenuItem.Checked;
+		}
+
+		private void toolpropertiesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			propertiesPanel.Visible = toolpropertiesToolStripMenuItem.Checked;
+			propertiesSplitter.Visible = toolpropertiesToolStripMenuItem.Checked;
+		}
+
+		private void toolStripMenuItem2_Click(object sender, EventArgs e)
+		{
+			Scale = 0.5f;
+		}
+
+		private void toolStripMenuItem3_Click(object sender, EventArgs e)
+		{
+			Scale = 1;
+		}
+
+		private void toolStripMenuItem4_Click(object sender, EventArgs e)
+		{
+			Scale = 2;
+		}
+
+		private void fitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Scale = Math.Min(
+				(float)(canvasContainer.Width - 2 * ASMargin) / Project.Image.Width,
+				(float)(canvasContainer.Height - 2 * ASMargin) / Project.Image.Height
+			);
+		}
+
+		private void zoomValue_ValueChanged(object sender, EventArgs e)
+		{
+			Scale = (float)zoomValue.Value / 100;
+		}
+
+		private void zoomBar_ValueChanged(object sender, EventArgs e)
+		{
+			Scale = (float)Math.Pow(10, (float)zoomBar.Value / 10);
+		}
+
+		private void layerMenu_Opening(object sender, CancelEventArgs e)
+		{
+			var screen = new Point(
+				layerMenu.Left,
+				layerMenu.Top
+			);
+			var point = layersList.PointToClient(screen);
+			var child = layersList.GetChildAtPoint(point);
+			layerListItem_Click(child, e);
+		}
+
 	}
 }

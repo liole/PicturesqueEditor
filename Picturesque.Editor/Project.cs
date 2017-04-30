@@ -14,11 +14,11 @@ namespace Picturesque.Editor
 {
 	public class Project
 	{
-		public Selection Selection { get; set; }
 		public List<ILayer> Layers { get; private set; }
 		public Bitmap Image { get; private set; }
 		private ILayer selectedLayer;
-		public ILayer SelectedLayer {
+		public ILayer SelectedLayer
+		{
 			get { return selectedLayer; }
 			set
 			{
@@ -29,9 +29,23 @@ namespace Picturesque.Editor
 				}
 			}
 		}
+		private Selection selection { get; set; }
+		public Selection Selection
+		{
+			get { return selection; }
+			set
+			{
+				selection = value;
+				if (SelectionChanged != null)
+				{
+					SelectionChanged(this, new EventArgs());
+				}
+			}
+		}
 
 		public event EventHandler Invalidated;
 		public event EventHandler SelectedLayerChanged;
+		public event EventHandler SelectionChanged;
 		public event EventHandler LayersListChanged;
 
 		public Project(Size size)
