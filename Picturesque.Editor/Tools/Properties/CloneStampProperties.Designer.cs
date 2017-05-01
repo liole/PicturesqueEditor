@@ -41,6 +41,7 @@
 			this.xValue = new System.Windows.Forms.NumericUpDown();
 			this.label2 = new System.Windows.Forms.Label();
 			this.shiftLbl = new System.Windows.Forms.Label();
+			this.poygonInfo = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.wValue)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.wTrackBar)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.yValue)).BeginInit();
@@ -203,11 +204,24 @@
 			this.shiftLbl.TabIndex = 14;
 			this.shiftLbl.Text = "Shift:";
 			// 
+			// poygonInfo
+			// 
+			this.poygonInfo.AutoSize = true;
+			this.poygonInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.poygonInfo.ForeColor = System.Drawing.Color.LightGreen;
+			this.poygonInfo.Location = new System.Drawing.Point(569, 10);
+			this.poygonInfo.Name = "poygonInfo";
+			this.poygonInfo.Size = new System.Drawing.Size(158, 13);
+			this.poygonInfo.TabIndex = 15;
+			this.poygonInfo.Text = "Use Ctrl key to pick source area";
+			this.poygonInfo.Visible = false;
+			// 
 			// CloneStampProperties
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.DimGray;
+			this.Controls.Add(this.poygonInfo);
 			this.Controls.Add(this.shiftLbl);
 			this.Controls.Add(this.yPxLabel);
 			this.Controls.Add(this.yValue);
@@ -223,7 +237,7 @@
 			this.Controls.Add(this.titleLabel);
 			this.ForeColor = System.Drawing.Color.White;
 			this.Name = "CloneStampProperties";
-			this.Size = new System.Drawing.Size(643, 32);
+			this.Size = new System.Drawing.Size(763, 32);
 			((System.ComponentModel.ISupportInitialize)(this.wValue)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.wTrackBar)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.yValue)).EndInit();
@@ -248,5 +262,6 @@
 		private System.Windows.Forms.NumericUpDown xValue;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label shiftLbl;
+		private System.Windows.Forms.Label poygonInfo;
 	}
 }

@@ -21,7 +21,7 @@ namespace Picturesque.Editor
 			var opaqueWidth = width * (1 - fuzziness);
 			var numSteps = width - opaqueWidth + 1;
 
-			float delta = (float)pen.Color.A / numSteps / numSteps;
+			float delta = (float)pen.Color.A / numSteps;
 
 			float alpha = delta;
 
@@ -39,6 +39,62 @@ namespace Picturesque.Editor
 					g.DrawLine(stepPen, point1, point2);
 				}
 				alpha += delta;
+				delta /= 1.5f;
+			}
+		}
+
+		public static void DrawFuzzyLines(this Graphics g, Pen pen, float fuzziness, PointF[] lines)
+		{
+			var width = pen.Width;
+			var opaqueWidth = width * (1 - fuzziness);
+			var numSteps = width - opaqueWidth + 1;
+
+			float delta = (float)pen.Color.A / (numSteps);//*(float)Math.Log(numSteps));
+
+			float alpha = delta;
+
+			for (var thickness = width; thickness >= opaqueWidth; thickness--)
+			{
+				Color color = Color.FromArgb(
+					(int)alpha,
+					pen.Color.R,
+					pen.Color.G,
+					pen.Color.B);
+				using (Pen stepPen = new Pen(color, thickness))
+				{
+					stepPen.EndCap = LineCap.Round;
+					stepPen.LineJoin = LineJoin.Round;
+					stepPen.StartCap = LineCap.Round;
+					g.DrawLines(stepPen, lines);
+				}
+				alpha += delta;
+				delta /= 1.5f;
+			}
+		}
+
+		public static void FillFuzzyCircle(this Graphics g, Brush brush, float fuzziness, float x, float y, float width)
+		{
+			var opaqueWidth = width * (1 - fuzziness);
+			var numSteps = width - opaqueWidth + 1;
+
+			var colorB = (brush as SolidBrush).Color;
+			float delta = (float)colorB.A / numSteps;
+
+			float alpha = delta;
+
+			for (var thickness = width; thickness >= opaqueWidth; thickness--)
+			{
+				Color color = Color.FromArgb(
+					(int)alpha,
+					colorB.R,
+					colorB.G,
+					colorB.B);
+				using (Brush stepBrush = new SolidBrush(color))
+				{
+					g.FillEllipse(stepBrush, x-thickness/2, y-thickness/2, thickness, thickness);
+				}
+				alpha += delta;
+				delta /= 1.5f;
 			}
 		}
 

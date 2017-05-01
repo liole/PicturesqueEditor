@@ -18,7 +18,7 @@ namespace Picturesque.Editor.Tools
 		private float width { get; set; }
 
 		protected Bitmap img;
-		private List<PointF> points;
+		protected List<PointF> points;
 
 		public Pencil(Project project, Color color, float widthP = 1) :
 			base(project)
@@ -64,15 +64,20 @@ namespace Picturesque.Editor.Tools
 				pen.StartCap = System.Drawing.Drawing2D.LineCap.Round;
 				pen.LineJoin = System.Drawing.Drawing2D.LineJoin.Round;
 				pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-				if (points.Count > 1)
-				{
-					g.DrawLines(pen, points.ToArray());
-				}
-				else if (points.Count == 1)
-				{
-					var c = points.First();
-					g.FillEllipse(pen.Brush, c.X - Width / 2, c.Y - Width / 2, Width, Width);
-				}
+				drawLines(g, pen);
+			}
+		}
+
+		protected virtual void drawLines(Graphics g, Pen pen)
+		{
+			if (points.Count > 1)
+			{
+				g.DrawLines(pen, points.ToArray());
+			}
+			else if (points.Count == 1)
+			{
+				var c = points.First();
+				g.FillEllipse(pen.Brush, c.X - Width / 2, c.Y - Width / 2, Width, Width);
 			}
 		}
 

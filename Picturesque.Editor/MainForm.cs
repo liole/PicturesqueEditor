@@ -411,10 +411,10 @@ namespace Picturesque.Editor
 						Tool = new MoveTool(Project);
 						break;
 					case "pencil":
-						Tool = new Pencil(Project, MyForeColor, 1);
+						Tool = new Pencil(Project, MyForeColor);
 						break;
 					case "eraser":
-						Tool = new Eraser(Project, 10);
+						Tool = new Eraser(Project);
 						break;
 					case "picker":
 						Tool = new ColorPicker(Project, MyForeColor, MyBackColor);
@@ -427,10 +427,13 @@ namespace Picturesque.Editor
 						Tool = new Transform(Project);
 						break;
 					case "shape":
-						Tool = new Shape(Project, MyForeColor, MyBackColor, 2);
+						Tool = new Shape(Project, MyForeColor, MyBackColor);
 						break;
 					case "stamp":
-						Tool = new CloneStamp(Project, 25);
+						Tool = new CloneStamp(Project);
+						break;
+					case "brush":
+						Tool = new FuzzyBrush(Project);
 						break;
 					default:
 						throw new ArgumentException();
@@ -469,9 +472,7 @@ namespace Picturesque.Editor
 
 		void colorPicker_ColorChanged(object sender, EventArgs e)
 		{
-			var cp = Tool as ColorPicker;
-			foreColor.BackColor = cp.ForeColor;
-			backColor.BackColor = cp.BackColor;
+
 		}
 
 		private void toolBtn_Clicked(object sender, EventArgs e)
