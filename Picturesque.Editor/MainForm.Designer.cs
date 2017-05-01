@@ -108,8 +108,6 @@
 			this.propertiesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.indexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sidebar = new System.Windows.Forms.Panel();
@@ -172,6 +170,8 @@
 			this.grayscaleToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.sepiaToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.negativeToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.showToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.showToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolbar.SuspendLayout();
 			this.toolbarLayout.SuspendLayout();
 			this.canvasContainer.SuspendLayout();
@@ -876,6 +876,7 @@
             this.toolStripMenuItem8,
             this.moveUpToolStripMenuItem1,
             this.moveDownToolStripMenuItem1,
+            this.showToolStripMenuItem1,
             this.toolStripMenuItem9,
             this.extendToolStripMenuItem1,
             this.clipToolStripMenuItem1,
@@ -985,8 +986,6 @@
 			// 
 			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.contentsToolStripMenuItem,
-            this.indexToolStripMenuItem,
-            this.searchToolStripMenuItem,
             this.toolStripSeparator5,
             this.aboutToolStripMenuItem});
 			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
@@ -996,20 +995,9 @@
 			// contentsToolStripMenuItem
 			// 
 			this.contentsToolStripMenuItem.Name = "contentsToolStripMenuItem";
-			this.contentsToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+			this.contentsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.contentsToolStripMenuItem.Text = "&Contents";
-			// 
-			// indexToolStripMenuItem
-			// 
-			this.indexToolStripMenuItem.Name = "indexToolStripMenuItem";
-			this.indexToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
-			this.indexToolStripMenuItem.Text = "&Index";
-			// 
-			// searchToolStripMenuItem
-			// 
-			this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
-			this.searchToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
-			this.searchToolStripMenuItem.Text = "&Search";
+			this.contentsToolStripMenuItem.Click += new System.EventHandler(this.contentsToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator5
 			// 
@@ -1019,8 +1007,9 @@
 			// aboutToolStripMenuItem
 			// 
 			this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.aboutToolStripMenuItem.Text = "&About...";
+			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
 			// 
 			// sidebar
 			// 
@@ -1214,13 +1203,15 @@
             this.removeToolStripMenuItem,
             this.moveUpToolStripMenuItem,
             this.moveDownToolStripMenuItem,
+            this.showToolStripMenuItem,
             this.toolStripMenuItem6,
             this.extendToolStripMenuItem,
             this.clipToolStripMenuItem,
             this.toolStripMenuItem7,
             this.propertiesToolStripMenuItem});
 			this.layerMenu.Name = "layerMenu";
-			this.layerMenu.Size = new System.Drawing.Size(139, 148);
+			this.layerMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.layerMenu.Size = new System.Drawing.Size(139, 170);
 			this.layerMenu.Opening += new System.ComponentModel.CancelEventHandler(this.layerMenu_Opening);
 			// 
 			// removeToolStripMenuItem
@@ -1686,6 +1677,26 @@
 			this.negativeToolStripMenuItem1.Text = "Negative";
 			this.negativeToolStripMenuItem1.Click += new System.EventHandler(this.negativeToolStripMenuItem_Click);
 			// 
+			// showToolStripMenuItem
+			// 
+			this.showToolStripMenuItem.Checked = true;
+			this.showToolStripMenuItem.CheckOnClick = true;
+			this.showToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.showToolStripMenuItem.Name = "showToolStripMenuItem";
+			this.showToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.showToolStripMenuItem.Text = "Show";
+			this.showToolStripMenuItem.Click += new System.EventHandler(this.showToolStripMenuItem_Click);
+			// 
+			// showToolStripMenuItem1
+			// 
+			this.showToolStripMenuItem1.Checked = true;
+			this.showToolStripMenuItem1.CheckOnClick = true;
+			this.showToolStripMenuItem1.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.showToolStripMenuItem1.Name = "showToolStripMenuItem1";
+			this.showToolStripMenuItem1.Size = new System.Drawing.Size(161, 22);
+			this.showToolStripMenuItem1.Text = "Show";
+			this.showToolStripMenuItem1.Click += new System.EventHandler(this.showToolStripMenuItem_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1701,6 +1712,7 @@
 			this.Controls.Add(this.sidebar);
 			this.Controls.Add(this.menuStrip);
 			this.ForeColor = System.Drawing.Color.White;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip;
 			this.Name = "MainForm";
@@ -1761,8 +1773,6 @@
 		private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem contentsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem indexToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
 		private System.Windows.Forms.RadioButton pencilBtn;
@@ -1876,6 +1886,8 @@
 		private System.Windows.Forms.ToolStripMenuItem grayscaleToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem sepiaToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem negativeToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripMenuItem showToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem showToolStripMenuItem1;
 	}
 }
 

@@ -29,6 +29,7 @@ namespace Picturesque.Editor
 
 		private NewProjectDialog newProjectDialog;
 
+		HelpForm helpForm = new HelpForm();
 		public MainForm()
 		{
 			InitializeComponent();
@@ -262,6 +263,7 @@ namespace Picturesque.Editor
 			downLayerBtn.Enabled = Project.SelectedLayer != Project.Layers.First();
 			moveDownToolStripMenuItem.Enabled = downLayerBtn.Enabled;
 			moveDownToolStripMenuItem1.Enabled = downLayerBtn.Enabled;
+			setShowCheckbox();
 		}
 
 		void Project_SelectionChanged(object sender, EventArgs e)
@@ -310,7 +312,14 @@ namespace Picturesque.Editor
 		{
 			changed = true;
 			UpdateTitle();
+			setShowCheckbox();
 			canvas.Invalidate();
+		}
+
+		void setShowCheckbox()
+		{
+			showToolStripMenuItem.Checked = Project.SelectedLayer.Visible;
+			showToolStripMenuItem1.Checked = Project.SelectedLayer.Visible;
 		}
 
 		private void canvas_MouseDown(object sender, MouseEventArgs e)
@@ -724,6 +733,7 @@ namespace Picturesque.Editor
 				var image = new Bitmap(filename);
 				var dpi = Program.GetDPI();
 				image.SetResolution(dpi, dpi);
+				image.MakeTransparent();
 				SetProject(new Project(image));
 			}
 		}
@@ -954,6 +964,22 @@ namespace Picturesque.Editor
 		{
 			Project.SelectedLayer = Project.AddLayer(
 				new FilterLayer(Project.GetMask(), FilterLayer.FilterType.Negative));
+		}
+
+		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new AboutForm().ShowDialog();
+		}
+
+		private void showToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Project.SelectedLayer.Visible ^= true;
+			Project.SelectedLayer.Invalidate();
+		}
+
+		private void contentsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			helpForm.Show();
 		}
 
 	}

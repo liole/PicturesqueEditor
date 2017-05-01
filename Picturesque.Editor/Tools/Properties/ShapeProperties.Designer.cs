@@ -182,9 +182,9 @@
 			this.fillInfo.ForeColor = System.Drawing.Color.LightGray;
 			this.fillInfo.Location = new System.Drawing.Point(526, 4);
 			this.fillInfo.Name = "fillInfo";
-			this.fillInfo.Size = new System.Drawing.Size(119, 26);
+			this.fillInfo.Size = new System.Drawing.Size(120, 26);
 			this.fillInfo.TabIndex = 13;
-			this.fillInfo.Text = "displaying only pattern\r\ncolor is selected globaly";
+			this.fillInfo.Text = "Displaying only pattern.\r\nColor is selected globaly";
 			// 
 			// poygonInfo
 			// 

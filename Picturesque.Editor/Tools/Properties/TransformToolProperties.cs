@@ -48,5 +48,10 @@ namespace Picturesque.Editor.Tools.Properties
 			Tool.Invalidate();
 			changing = false;
 		}
+
+		private void revertBtn_Click(object sender, EventArgs e)
+		{
+			Tool.Discard();
+		}
 	}
 }

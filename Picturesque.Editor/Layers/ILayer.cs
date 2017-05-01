@@ -56,6 +56,7 @@ namespace Picturesque.Editor.Layers
 			var image = new Bitmap(Path.Combine(directory, String.Format("{0}.png", name)));
 			var dpi = Program.GetDPI();
 			image.SetResolution(dpi, dpi);
+			image.MakeTransparent();
 			layer.Image = image;
 			return layer;
 		}

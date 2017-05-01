@@ -22,6 +22,7 @@ namespace Picturesque.Editor.Tools
 
 		protected ControlElement controlElement;
 		protected Bitmap img;
+		protected Selection prevSelection;
 
 		public Transform(Project project) :
 			base(project)
@@ -46,6 +47,7 @@ namespace Picturesque.Editor.Tools
 				Scale = new PointF(1, 1);
 				Rotate = 0; // degrees
 				RotateCenter = new PointF(0.5f, 0.5f);
+				prevSelection = Project.Selection;
 				Project.ClearSelection();
 			}
 		}
@@ -310,6 +312,8 @@ namespace Picturesque.Editor.Tools
 			{
 				var editableLayer = Project.SelectedLayer as IEditable;
 				editableLayer.DiscardChanges();
+				Project.Selection = prevSelection;
+				Init();
 			}
 		}
 

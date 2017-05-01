@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TransformToolProperties));
 			this.titleLabel = new System.Windows.Forms.Label();
 			this.titleSplitter = new System.Windows.Forms.Panel();
 			this.xLabel = new System.Windows.Forms.Label();
@@ -41,6 +42,7 @@
 			this.sxLbl = new System.Windows.Forms.Label();
 			this.rotLbl = new System.Windows.Forms.Label();
 			this.rotateValue = new System.Windows.Forms.NumericUpDown();
+			this.revertBtn = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.xValue)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.yValue)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.scaleYValue)).BeginInit();
@@ -226,11 +228,28 @@
 			this.rotateValue.TabIndex = 13;
 			this.rotateValue.ValueChanged += new System.EventHandler(this.value_ValueChanged);
 			// 
+			// revertBtn
+			// 
+			this.revertBtn.FlatAppearance.BorderSize = 0;
+			this.revertBtn.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.revertBtn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.revertBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+			this.revertBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.revertBtn.Image = ((System.Drawing.Image)(resources.GetObject("revertBtn.Image")));
+			this.revertBtn.Location = new System.Drawing.Point(641, 3);
+			this.revertBtn.Name = "revertBtn";
+			this.revertBtn.Size = new System.Drawing.Size(24, 24);
+			this.revertBtn.TabIndex = 14;
+			this.revertBtn.Tag = "";
+			this.revertBtn.UseVisualStyleBackColor = false;
+			this.revertBtn.Click += new System.EventHandler(this.revertBtn_Click);
+			// 
 			// TransformToolProperties
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.DimGray;
+			this.Controls.Add(this.revertBtn);
 			this.Controls.Add(this.rotateValue);
 			this.Controls.Add(this.rotLbl);
 			this.Controls.Add(this.scaleYValue);
@@ -272,5 +291,6 @@
 		private System.Windows.Forms.Label sxLbl;
 		private System.Windows.Forms.Label rotLbl;
 		private System.Windows.Forms.NumericUpDown rotateValue;
+		private System.Windows.Forms.Button revertBtn;
 	}
 }
