@@ -31,7 +31,13 @@ namespace Picturesque.Editor.Tools
 			if (img != null)
 			{
 				var brush = new TextureBrush(img);
-				brush.TranslateTransform(Shift.X, Shift.Y);
+				var translate = Shift;
+				if (Project.SelectedLayer is IMovable)
+				{
+					var ml = Project.SelectedLayer as IMovable;
+					translate = Shift.Move(ml.Position);
+				}
+				brush.TranslateTransform(translate.X, translate.Y);
 				brush.WrapMode = System.Drawing.Drawing2D.WrapMode.Clamp;
 				return new Pen(brush, Width);
 			}

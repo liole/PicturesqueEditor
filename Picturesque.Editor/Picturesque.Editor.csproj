@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="ColorRGB.cs" />
     <Compile Include="GraphicsUtils.cs" />
+    <Compile Include="Layers\FilterLayer.cs" />
     <Compile Include="Layers\HueLayer.cs" />
     <Compile Include="Layers\BrightnessContrastLayer.cs" />
     <Compile Include="Layers\ILayer.cs" />
@@ -58,6 +59,12 @@
       <DependentUpon>LayerListItem.cs</DependentUpon>
     </Compile>
     <Compile Include="Layers\MaskedLayer.cs" />
+    <Compile Include="Layers\Properties\FilterProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Layers\Properties\FilterProperties.Designer.cs">
+      <DependentUpon>FilterProperties.cs</DependentUpon>
+    </Compile>
     <Compile Include="Layers\Properties\HueProperties.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -146,6 +153,9 @@
     <Compile Include="Tools\Tool.cs" />
     <EmbeddedResource Include="LayerListItem.resx">
       <DependentUpon>LayerListItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Layers\Properties\FilterProperties.resx">
+      <DependentUpon>FilterProperties.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Layers\Properties\HueProperties.resx">
       <DependentUpon>HueProperties.cs</DependentUpon>

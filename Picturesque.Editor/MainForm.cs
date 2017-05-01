@@ -938,5 +938,23 @@ namespace Picturesque.Editor
 			layerListItem_Click(child, e);
 		}
 
+		private void grayscaleToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Project.SelectedLayer = Project.AddLayer(
+				new FilterLayer(Project.GetMask(), FilterLayer.FilterType.Grayscale));
+		}
+
+		private void sepiaToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Project.SelectedLayer = Project.AddLayer(
+				new FilterLayer(Project.GetMask(), FilterLayer.FilterType.Sepia));
+		}
+
+		private void negativeToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Project.SelectedLayer = Project.AddLayer(
+				new FilterLayer(Project.GetMask(), FilterLayer.FilterType.Negative));
+		}
+
 	}
 }
