@@ -32,5 +32,11 @@ namespace Picturesque.Editor
 		{
 			rtf.Rtf = Properties.Resources.Layers;
 		}
+
+		private void HelpForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			Hide();
+			e.Cancel = true;
+		}
 	}
 }

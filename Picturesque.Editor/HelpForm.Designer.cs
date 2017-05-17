@@ -138,6 +138,7 @@
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.HelpForm_FormClosing);
 			this.header.ResumeLayout(false);
 			this.header.PerformLayout();
 			this.ResumeLayout(false);

@@ -40,6 +40,11 @@ namespace Picturesque.Editor.Tools
 					Project.SelectAll();
 				}
 				img = Project.GetSelection();
+				if (Project.SelectedLayer is ImageLayer)
+				{
+					var im = Project.SelectedLayer as ImageLayer;
+					im.Extend(Project.Image.Size);
+				}
 				var editableLayer = Project.SelectedLayer as IEditable;
 				editableLayer.StartEditing();
 				Project.DeleteArea();

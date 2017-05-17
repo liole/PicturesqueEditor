@@ -304,8 +304,11 @@ namespace Picturesque.Editor
 
 		void layerListItem_Click(object sender, EventArgs e)
 		{
-			var item = sender as LayerListItem;
-			Project.SelectedLayer = item.Model;
+			if (!(Tool is Transform))
+			{
+				var item = sender as LayerListItem;
+				Project.SelectedLayer = item.Model;
+			}
 		}
 
 		void Project_Invalidated(object sender, EventArgs e)

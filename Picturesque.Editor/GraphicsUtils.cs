@@ -352,13 +352,25 @@ namespace Picturesque.Editor
 			return rgb;
 		}
 
+		public static Image ResetDPI(this Image image)
+		{
+			if (image is Bitmap)
+			{
+				var bmp = image as Bitmap;
+				var dpi = Program.GetDPI();
+				bmp.SetResolution(dpi, dpi);
+				bmp.MakeTransparent();
+			}
+			return image;
+		}
+
 		public static Image GetImageFromClipboard()
 		{
 			using (MemoryStream ms = Clipboard.GetData("PNG") as MemoryStream)
 			{
 				if (ms != null)
 				{
-					try { return Image.FromStream(ms); }
+					try { return Image.FromStream(ms).ResetDPI(); }
 					catch { }
 				}
 			}
@@ -367,7 +379,7 @@ namespace Picturesque.Editor
 			{
 				foreach (string file in paths)
 				{
-					try { return Image.FromFile(file); }
+					try { return Image.FromFile(file).ResetDPI(); }
 					catch { }
 				}
 			}
@@ -376,7 +388,7 @@ namespace Picturesque.Editor
 			{
 				if (ms == null)
 				{
-					return Clipboard.GetImage();
+					return Clipboard.GetImage().ResetDPI();
 				}
 				data = ms.ToArray();
 			}
@@ -385,7 +397,7 @@ namespace Picturesque.Editor
 			int height = BitConverter.ToInt32(data, 8);
 			int bpp = BitConverter.ToInt16(data, 14);
 			if (bpp != 32)
-				return Clipboard.GetImage();
+				return Clipboard.GetImage().ResetDPI();
 			GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 			try
 			{
@@ -394,7 +406,7 @@ namespace Picturesque.Editor
 			}
 			catch
 			{
-				return Clipboard.GetImage();
+				return Clipboard.GetImage().ResetDPI();
 			}
 			finally
 			{
