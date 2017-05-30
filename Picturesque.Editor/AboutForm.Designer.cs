@@ -96,7 +96,7 @@
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(85, 20);
 			this.label4.TabIndex = 5;
-			this.label4.Text = "version 2.0";
+			this.label4.Text = "version 2.1";
 			// 
 			// AboutForm
 			// 
