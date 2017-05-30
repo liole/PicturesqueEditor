@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Picturesque.Editor
 {
-	public class Selection: IDisposable
+	public class Selection: IDisposable, ICloneable
 	{
 		public GraphicsPath Path { get; private set; }
 		public event EventHandler Invalidated;
@@ -72,6 +72,16 @@ namespace Picturesque.Editor
 		public void Dispose()
 		{
 			timer.Dispose();
+		}
+
+		public object Clone()
+		{
+			var copy = new Selection(Path.Clone() as GraphicsPath);
+			if (Invalidated != null)
+			{
+				copy.Invalidated = Invalidated;
+			}
+			return copy;
 		}
 	}
 }

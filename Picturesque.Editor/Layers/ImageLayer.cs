@@ -273,5 +273,22 @@ namespace Picturesque.Editor.Layers
 			}
 			Image.Save(Path.Combine(directory, String.Format("{0}.png", name)), ImageFormat.Png);
 		}
+
+		public object Clone()
+		{
+			var copy = this.MemberwiseClone() as ImageLayer;
+			copy.Image = Image.Clone() as Bitmap;
+			//copy.ColorMatrix = ColorMatrix.Clone(); // no clone?
+			return copy;
+		}
+
+		public void Dispose()
+		{
+			Image.Dispose();
+			if (prev != null)
+			{
+				prev.Dispose();
+			}
+		}
 	}
 }

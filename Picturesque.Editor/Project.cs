@@ -12,7 +12,7 @@ using System.Xml.Serialization;
 
 namespace Picturesque.Editor
 {
-	public class Project
+	public class Project: ICloneable, IDisposable
 	{
 		public List<ILayer> Layers { get; private set; }
 		public Bitmap Image { get; private set; }
@@ -29,12 +29,16 @@ namespace Picturesque.Editor
 				}
 			}
 		}
-		private Selection selection { get; set; }
+		private Selection selection;
 		public Selection Selection
 		{
 			get { return selection; }
 			set
 			{
+				if (selection != null)
+				{
+					selection.Dispose();
+				}
 				selection = value;
 				if (SelectionChanged != null)
 				{
@@ -111,6 +115,7 @@ namespace Picturesque.Editor
 			{
 				SelectedLayer = Layers.Last();
 			}
+			toRemove.Dispose();
 			if (LayersListChanged != null)
 			{
 				LayersListChanged(this, new EventArgs());
@@ -362,6 +367,37 @@ namespace Picturesque.Editor
 			}
 			proj.SelectedLayer = proj.Layers.First();
 			return proj;
+		}
+
+		public object Clone()
+		{
+			var copy = this.MemberwiseClone() as Project;
+			copy.Layers = new List<ILayer>(Layers.Select(layer => layer.Clone() as ILayer));
+			copy.Layers.ForEach(layer => {
+				layer.Invalidated -= layer_Invalidated;
+				layer.Invalidated += copy.layer_Invalidated;
+			});
+			copy.selectedLayer = copy.Layers[Layers.IndexOf(selectedLayer)];
+			if (selection != null)
+			{
+				copy.selection = selection.Clone() as Selection;
+			}
+			copy.Image = Image.Clone() as Bitmap;
+			System.Diagnostics.Debug.Write(copy.Invalidated == null);
+			return copy;
+		}
+
+		public void Dispose()
+		{
+			Image.Dispose();
+			if (Selection != null)
+			{
+				Selection.Dispose();
+			}
+			foreach(var layer in Layers)
+			{
+				layer.Dispose();
+			}
 		}
 	}
 }

@@ -23,6 +23,7 @@ namespace Picturesque.Editor
 		public float MinScale = 1f / 7.5f;
 		private float scale = 1.0f;
 		public Project Project { get; set; }
+		public History History { get; set; }
 		public Tool Tool { get; set; }
 		public string File { get; set; }
 		private bool changed = false;
@@ -190,9 +191,9 @@ namespace Picturesque.Editor
 			}
 		}
 
-		public void SetProject(Project proj)
+		public void SetProject(Project proj, bool newHistory = true)
 		{
-			if (Project != null)
+			if (Project != null && newHistory)
 			{
 				Project.Invalidated -= Project_Invalidated;
 				Project.LayersListChanged -= Project_LayersListChanged;
@@ -200,18 +201,39 @@ namespace Picturesque.Editor
 				Project.SelectionChanged -= Project_SelectionChanged;
 			}
 			Project = proj;
-			Project.Invalidated += Project_Invalidated;
-			Project.LayersListChanged += Project_LayersListChanged;
-			Project.SelectedLayerChanged += Project_SelectedLayerChanged;
-			Project.SelectionChanged += Project_SelectionChanged;
+			if (newHistory)
+			{
+				Project.Invalidated += Project_Invalidated;
+				Project.LayersListChanged += Project_LayersListChanged;
+				Project.SelectedLayerChanged += Project_SelectedLayerChanged;
+				Project.SelectionChanged += Project_SelectionChanged;
+				History = new History(Project);
+				updateUndoRedo();
+			}
 			Project.Invalidate();
 			canvas.Image = Project.Image;
 			Project_LayersListChanged(this, null);
 			repositionCanvas();
 			changed = false;
 			UpdateTitle();
-			tools = new Dictionary<string, Tools.Tool>();
-			moveBtn.PerformClick();
+			if (newHistory)
+			{
+				tools = new Dictionary<string, Tools.Tool>();
+				moveBtn.PerformClick();
+			}
+			else
+			{
+				foreach(var tool in tools)
+				{
+					tool.Value.Project = Project;
+				}
+			}
+		}
+
+		void updateUndoRedo()
+		{
+			undoToolStripMenuItem.Enabled = History.CanUndo;
+			redoToolStripMenuItem.Enabled = History.CanRedo;
 		}
 
 		private void newToolStripMenuItem_Click(object sender, EventArgs e)
@@ -315,6 +337,11 @@ namespace Picturesque.Editor
 		{
 			changed = true;
 			UpdateTitle();
+			if (!(sender is Selection || (Tool is MoveTool && !Project.SelectedLayer.Visible)))
+			{
+				History.SaveState();
+				updateUndoRedo();
+			}
 			setShowCheckbox();
 			canvas.Invalidate();
 		}
@@ -983,6 +1010,18 @@ namespace Picturesque.Editor
 		private void contentsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			helpForm.Show();
+		}
+
+		private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SetProject(History.Undo(), false);
+			updateUndoRedo();
+		}
+
+		private void redoToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SetProject(History.Redo(), false);
+			updateUndoRedo();
 		}
 
 	}

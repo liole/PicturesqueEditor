@@ -62,6 +62,7 @@
     <Compile Include="HelpForm.Designer.cs">
       <DependentUpon>HelpForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="History.cs" />
     <Compile Include="Layers\FilterLayer.cs" />
     <Compile Include="Layers\HueLayer.cs" />
     <Compile Include="Layers\BrightnessContrastLayer.cs" />

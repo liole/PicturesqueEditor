@@ -10,7 +10,7 @@ using System.Xml.Serialization;
 
 namespace Picturesque.Editor.Layers
 {
-	public interface ILayer
+	public interface ILayer: ICloneable, IDisposable
 	{
 		event EventHandler<EventArgs> Invalidated;
 
