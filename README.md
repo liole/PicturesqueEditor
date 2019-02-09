@@ -29,3 +29,7 @@ Free open-source simplified Photoshop alternative
 
 ## Preview
 ![screenshot](https://user-images.githubusercontent.com/8505995/52524517-6ad44400-2ca6-11e9-8deb-40d348018587.png)
+
+## Download
+
+[Windows executable (v2.1)](https://github.com/liole/PicturesqueEditor/releases/download/v2.1/Picturesque.Editor.v2.1.exe) ~ 300KB
